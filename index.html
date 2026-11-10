@@ -1,0 +1,1017 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0a0c12">
+<meta name="color-scheme" content="dark">
+<meta name="description" content="Un questionnaire de 30 affirmations pour se situer sur l’axe gauche-droite dans le contexte politique français.">
+<title>Chambre — Où vous situez-vous ?</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230a0c12'/%3E%3Ccircle cx='8' cy='20' r='3' fill='%23ef4444'/%3E%3Ccircle cx='16' cy='13' r='3' fill='%23b9a6f5'/%3E%3Ccircle cx='24' cy='20' r='3' fill='%232456d6'/%3E%3C/svg%3E">
+<style>
+  :root {
+    --bg: #0a0c12;
+    --surface: #131722;
+    --surface-2: #1a1f2e;
+    --border: #262c3f;
+    --border-strong: #39415a;
+    --text: #eef0f6;
+    --muted: #9aa3b8;
+    --faint: #6b7489;
+    --accent: #a78bfa;
+    --accent-soft: rgba(167, 139, 250, .14);
+    --gauge: linear-gradient(90deg,
+      #b3121d 0%, #ef4444 16%, #fb7185 34%, #b9a6f5 50%,
+      #60a5fa 66%, #2456d6 84%, #14215e 100%);
+    --radius: 18px;
+    --ease: cubic-bezier(.22, 1, .36, 1);
+  }
+
+  * { box-sizing: border-box; }
+
+  html { -webkit-text-size-adjust: 100%; }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    min-height: 100dvh;
+    background:
+      radial-gradient(900px 480px at 12% -10%, rgba(239, 68, 68, .10), transparent 60%),
+      radial-gradient(900px 480px at 88% -10%, rgba(36, 86, 214, .13), transparent 60%),
+      var(--bg);
+    background-attachment: fixed;
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-size: 17px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .app {
+    width: 100%;
+    max-width: 680px;
+    margin: 0 auto;
+    min-height: 100vh;
+    min-height: 100dvh;
+    padding: max(20px, env(safe-area-inset-top)) 16px max(24px, env(safe-area-inset-bottom));
+    display: flex;
+    flex-direction: column;
+  }
+
+  .screen { display: none; flex: 1; flex-direction: column; }
+  .screen.is-active { display: flex; animation: screen-in .5s var(--ease) both; }
+
+  @keyframes screen-in {
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: none; }
+  }
+
+  h1, h2, h3, p { margin: 0; }
+
+  button {
+    font: inherit;
+    color: inherit;
+    cursor: pointer;
+    border: 0;
+    background: none;
+    touch-action: manipulation;
+  }
+  button:focus-visible {
+    outline: 3px solid var(--accent);
+    outline-offset: 3px;
+  }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 700;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    font-size: 13px;
+    color: var(--muted);
+  }
+  .brand-dots { display: inline-flex; gap: 4px; }
+  .brand-dots i { width: 8px; height: 8px; border-radius: 50%; display: block; }
+  .brand-dots i:nth-child(1) { background: #ef4444; }
+  .brand-dots i:nth-child(2) { background: #b9a6f5; }
+  .brand-dots i:nth-child(3) { background: #2456d6; }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 58px;
+    padding: 0 26px;
+    border-radius: 16px;
+    font-weight: 650;
+    font-size: 17px;
+    transition: transform .15s var(--ease), background .2s, border-color .2s, opacity .2s;
+  }
+  .btn:active { transform: scale(.98); }
+  .btn-primary { background: var(--text); color: #0a0c12; }
+  .btn-primary:hover { background: #fff; }
+  .btn-ghost { border: 1.5px solid var(--border-strong); color: var(--text); }
+  .btn-ghost:hover { background: var(--surface-2); }
+  .btn[disabled] { opacity: .35; cursor: not-allowed; }
+
+  /* ---------- Accueil ---------- */
+
+  .home { justify-content: center; gap: 28px; padding: 12px 0 8px; }
+
+  .hemicycle { width: 100%; max-width: 440px; margin: 0 auto; display: block; }
+  .hemicycle circle {
+    opacity: 0;
+    animation: seat-in .6s var(--ease) both;
+  }
+  @keyframes seat-in {
+    from { opacity: 0; transform: scale(.4); }
+    to   { opacity: 1; transform: none; }
+  }
+  .hemicycle circle { transform-box: fill-box; transform-origin: center; }
+
+  .home h1 {
+    font-size: clamp(30px, 7.4vw, 46px);
+    line-height: 1.1;
+    letter-spacing: -.025em;
+    font-weight: 750;
+    text-wrap: balance;
+  }
+  .home .lead { color: var(--muted); font-size: 18px; max-width: 34em; }
+
+  .facts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  .fact {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 14px 12px;
+    text-align: center;
+  }
+  .fact b { display: block; font-size: 24px; letter-spacing: -.02em; }
+  .fact span { color: var(--muted); font-size: 13.5px; }
+
+  .home .btn-primary { width: 100%; }
+
+  .privacy {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    color: var(--muted);
+    font-size: 14.5px;
+  }
+  .privacy svg { flex: none; margin-top: 2px; }
+
+  /* ---------- Questionnaire ---------- */
+
+  .quiz-head { display: flex; flex-direction: column; gap: 12px; }
+  .quiz-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    font-size: 14.5px;
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
+  }
+  .quiz-meta strong { color: var(--text); font-weight: 650; }
+
+  .progress {
+    height: 8px;
+    border-radius: 99px;
+    background: var(--surface-2);
+    overflow: hidden;
+  }
+  .progress-bar {
+    height: 100%;
+    width: 0;
+    border-radius: 99px;
+    background: linear-gradient(90deg, #8b7cf0, #c4b5fd);
+    transition: width .45s var(--ease);
+  }
+
+  .quiz-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 24px;
+    padding: 26px 0 22px;
+  }
+  .quiz-body.swap { animation: q-in .38s var(--ease) both; }
+  @keyframes q-in {
+    from { opacity: 0; transform: translateX(var(--from, 18px)); }
+    to   { opacity: 1; transform: none; }
+  }
+
+  .theme-chip {
+    align-self: flex-start;
+    font-size: 12.5px;
+    font-weight: 650;
+    letter-spacing: .09em;
+    text-transform: uppercase;
+    color: var(--accent);
+    background: var(--accent-soft);
+    padding: 6px 12px;
+    border-radius: 99px;
+  }
+
+  .statement {
+    font-size: clamp(22px, 5.6vw, 30px);
+    line-height: 1.28;
+    letter-spacing: -.015em;
+    font-weight: 650;
+    text-wrap: pretty;
+    min-height: 3.84em;
+  }
+
+  .answers { display: flex; flex-direction: column; gap: 10px; }
+
+  .answer {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    width: 100%;
+    min-height: 60px;
+    padding: 12px 18px;
+    text-align: left;
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    border-radius: 16px;
+    font-weight: 550;
+    transition: background .18s, border-color .18s, transform .15s var(--ease);
+  }
+  .answer:hover { border-color: var(--border-strong); background: var(--surface-2); }
+  .answer:active { transform: scale(.985); }
+
+  .answer .radio {
+    flex: none;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    border: 2px solid var(--border-strong);
+    display: grid;
+    place-items: center;
+    transition: border-color .18s;
+  }
+  .answer .radio::after {
+    content: "";
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--accent);
+    transform: scale(0);
+    transition: transform .2s var(--ease);
+  }
+  .answer .label { flex: 1; }
+  .answer .key {
+    flex: none;
+    font-size: 12px;
+    color: var(--faint);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 1px 7px;
+    font-variant-numeric: tabular-nums;
+  }
+  @media (hover: none), (max-width: 560px) { .answer .key { display: none; } }
+
+  .answer[aria-checked="true"] {
+    background: var(--accent-soft);
+    border-color: var(--accent);
+  }
+  .answer[aria-checked="true"] .radio { border-color: var(--accent); }
+  .answer[aria-checked="true"] .radio::after { transform: scale(1); }
+
+  .quiz-nav { display: flex; gap: 10px; }
+  .quiz-nav .btn { white-space: nowrap; padding: 0 18px; }
+  .quiz-nav .btn-ghost { flex: none; }
+  .quiz-nav .btn-primary { flex: 1; }
+  @media (max-width: 349px) {
+    .quiz-nav .btn-ghost { width: 58px; padding: 0; }
+    .quiz-nav .btn-ghost .word { display: none; }
+  }
+
+  /* ---------- Résultat ---------- */
+
+  .result { gap: 30px; padding-top: 6px; }
+
+  .result-hero { text-align: center; padding-top: 14px; }
+  .eyebrow {
+    font-size: 12.5px;
+    font-weight: 650;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .score {
+    font-size: clamp(84px, 26vw, 136px);
+    line-height: 1;
+    font-weight: 800;
+    letter-spacing: -.05em;
+    font-variant-numeric: tabular-nums;
+    margin: 10px 0 4px;
+  }
+  .zone-name {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-size: clamp(24px, 6.4vw, 32px);
+    font-weight: 700;
+    letter-spacing: -.02em;
+  }
+  .zone-dot {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    box-shadow: 0 0 0 2px rgba(255, 255, 255, .85);
+  }
+  .scale-note { color: var(--muted); font-size: 14.5px; margin-top: 6px; }
+
+  .gauge-wrap { padding: 0 6px; }
+  .gauge {
+    position: relative;
+    height: 34px;
+    border-radius: 99px;
+    background: var(--gauge);
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .16), 0 10px 40px -12px rgba(120, 110, 220, .45);
+  }
+  .gauge .sep {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    margin-left: -1px;
+    background: rgba(10, 12, 18, .55);
+  }
+  .rail { position: absolute; top: 0; bottom: 0; left: 6px; right: 6px; }
+  .cursor {
+    position: absolute;
+    top: -9px;
+    bottom: -9px;
+    left: 50%;
+    width: 6px;
+    margin-left: -3px;
+    border-radius: 99px;
+    background: #fff;
+    box-shadow: 0 0 0 3px rgba(10, 12, 18, .9), 0 4px 14px rgba(0, 0, 0, .6);
+    transition: left 1.5s var(--ease);
+  }
+  .cursor::before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: -15px;
+    width: 0;
+    height: 0;
+    margin-left: -8px;
+    border: 8px solid transparent;
+    border-top: 10px solid #fff;
+    border-bottom: 0;
+  }
+
+  .zones { display: flex; margin-top: 16px; }
+  .zone {
+    width: var(--w);
+    padding: 0 2px;
+    text-align: center;
+    font-size: 13px;
+    line-height: 1.2;
+    font-weight: 550;
+    color: var(--faint);
+    transition: color .4s .9s, border-color .4s .9s, background .4s .9s;
+  }
+  .zone.is-active { color: var(--text); font-weight: 750; }
+  .zone i { display: none; }
+  .zone small {
+    display: block;
+    margin-top: 4px;
+    font-size: .82em;
+    font-weight: 500;
+    opacity: .8;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+
+  /* Téléphone : les 7 zones passent en légende lisible sous la jauge. */
+  @media (max-width: 600px) {
+    .zones { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 20px; }
+    .zone {
+      width: auto;
+      display: grid;
+      grid-template-columns: auto 1fr;
+      column-gap: 9px;
+      align-items: center;
+      text-align: left;
+      padding: 9px 12px;
+      font-size: 14px;
+      color: var(--muted);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+    }
+    .zone:last-child { grid-column: 1 / -1; }
+    .zone i {
+      display: block;
+      grid-row: 1 / 3;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      box-shadow: 0 0 0 1.5px rgba(255, 255, 255, .55);
+    }
+    .zone small { margin-top: 2px; font-size: 12px; }
+    .zone.is-active { background: var(--surface-2); border-color: var(--text); }
+  }
+
+  .insight {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px 18px;
+    color: var(--muted);
+    font-size: 15.5px;
+  }
+  .insight b { color: var(--text); font-weight: 650; }
+  .insight p + p { margin-top: 8px; }
+
+  .section-title { font-size: 20px; font-weight: 700; letter-spacing: -.01em; margin-bottom: 4px; }
+  .section-sub { color: var(--muted); font-size: 15px; margin-bottom: 16px; }
+
+  .themes { display: flex; flex-direction: column; gap: 10px; }
+  .theme-row {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 14px 16px 18px;
+  }
+  .theme-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+  .theme-top .name { font-weight: 650; font-size: 15.5px; }
+  .theme-top .val {
+    flex: none;
+    text-align: right;
+    font-size: 14px;
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
+  }
+  .theme-top .val b { color: var(--text); font-weight: 700; margin-left: 6px; }
+
+  .mini {
+    position: relative;
+    height: 10px;
+    margin: 0 8px;
+    border-radius: 99px;
+    background: var(--gauge);
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .14);
+  }
+  .mini::before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: -3px;
+    bottom: -3px;
+    width: 2px;
+    margin-left: -1px;
+    background: rgba(10, 12, 18, .6);
+  }
+  .mini .dot {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 18px;
+    height: 18px;
+    margin: -9px 0 0 -9px;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 0 0 3px rgba(10, 12, 18, .9), 0 2px 8px rgba(0, 0, 0, .6);
+    transition: left 1.3s var(--ease);
+  }
+
+  .disclaimer { color: var(--muted); font-size: 14.5px; text-align: center; text-wrap: balance; }
+
+  .result-actions { display: flex; flex-direction: column; gap: 10px; }
+  @media (min-width: 560px) {
+    .result-actions { flex-direction: row-reverse; }
+    .result-actions .btn { flex: 1; }
+  }
+
+  @media (max-height: 700px) and (max-width: 560px) {
+    .quiz-body { gap: 16px; padding: 16px 0 14px; justify-content: flex-start; }
+    .statement { min-height: 0; }
+    .answer { min-height: 54px; }
+    .btn { min-height: 54px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: .01ms !important;
+      animation-delay: 0s !important;
+      transition-duration: .01ms !important;
+      transition-delay: 0s !important;
+    }
+  }
+</style>
+</head>
+<body>
+<main class="app">
+
+  <!-- Accueil -->
+  <section class="screen home is-active" id="screen-home" aria-labelledby="home-title">
+    <div class="brand"><span class="brand-dots"><i></i><i></i><i></i></span>Chambre</div>
+    <svg class="hemicycle" id="hemicycle" viewBox="-10 -6 340 180" role="img" aria-label="Hémicycle stylisé, du rouge à gauche au bleu foncé à droite"></svg>
+    <h1 id="home-title">Où vous situez‑vous sur l’échiquier politique français&nbsp;?</h1>
+    <p class="lead">Donnez votre avis sur 30 affirmations. À la fin, une jauge vous situe de l’extrême gauche à l’extrême droite, avec le détail thème par thème.</p>
+    <div class="facts">
+      <div class="fact"><b>30</b><span>affirmations</span></div>
+      <div class="fact"><b>6</b><span>thèmes</span></div>
+      <div class="fact"><b>≈ 5</b><span>minutes</span></div>
+    </div>
+    <button class="btn btn-primary" id="btn-start" type="button">Commencer</button>
+    <p class="privacy">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+      <span>Aucune donnée n’est envoyée ni enregistrée&nbsp;: tout reste dans votre navigateur et disparaît à la fermeture de la page.</span>
+    </p>
+    <noscript><p class="privacy">Ce questionnaire a besoin de JavaScript pour fonctionner.</p></noscript>
+  </section>
+
+  <!-- Questionnaire -->
+  <section class="screen quiz" id="screen-quiz" aria-label="Questionnaire">
+    <header class="quiz-head">
+      <div class="quiz-meta">
+        <span>Question <strong id="q-num">1</strong> sur 30</span>
+        <span id="q-left"></span>
+      </div>
+      <div class="progress" id="progress" role="progressbar" aria-valuemin="0" aria-valuemax="30" aria-valuenow="1" aria-label="Progression">
+        <div class="progress-bar" id="progress-bar"></div>
+      </div>
+    </header>
+
+    <div class="quiz-body" id="quiz-body">
+      <span class="theme-chip" id="q-theme"></span>
+      <h2 class="statement" id="q-text" tabindex="-1"></h2>
+      <div class="answers" id="answers" role="radiogroup" aria-labelledby="q-text"></div>
+    </div>
+
+    <nav class="quiz-nav" aria-label="Navigation">
+      <button class="btn btn-ghost" id="btn-prev" type="button" aria-label="Question précédente"><span aria-hidden="true">←</span><span class="word">Précédent</span></button>
+      <button class="btn btn-primary" id="btn-next" type="button">Suivant →</button>
+    </nav>
+  </section>
+
+  <!-- Résultat -->
+  <section class="screen result" id="screen-result" aria-labelledby="zone-name">
+    <div class="brand"><span class="brand-dots"><i></i><i></i><i></i></span>Chambre</div>
+
+    <div class="result-hero">
+      <div class="eyebrow">Votre résultat</div>
+      <div class="score" id="score" aria-live="polite">0</div>
+      <div class="zone-name"><span class="zone-dot" id="zone-dot"></span><span id="zone-name"></span></div>
+      <p class="scale-note">sur une échelle de −100 (extrême gauche) à +100 (extrême droite)</p>
+    </div>
+
+    <div class="gauge-wrap">
+      <div class="gauge" id="gauge" role="img">
+        <div class="rail"><div class="cursor" id="cursor"></div></div>
+      </div>
+      <div class="zones" id="zones" aria-hidden="true"></div>
+    </div>
+
+    <div class="insight" id="insight"></div>
+
+    <div>
+      <h3 class="section-title">Par thème</h3>
+      <p class="section-sub">On peut être à gauche sur un sujet et à droite sur un autre.</p>
+      <div class="themes" id="themes"></div>
+    </div>
+
+    <p class="disclaimer">Ce résultat est indicatif&nbsp;: il résume des opinions variées sur un seul axe gauche-droite et ne remplace pas une réflexion personnelle.</p>
+
+    <div class="result-actions">
+      <button class="btn btn-primary" id="btn-restart" type="button">Recommencer</button>
+      <button class="btn btn-ghost" id="btn-review" type="button">Revoir mes réponses</button>
+    </div>
+  </section>
+
+</main>
+
+<script>
+"use strict";
+
+/* ------------------------------------------------------------------
+   Données. Le champ « d » (direction : -1 = gauche, +1 = droite)
+   sert uniquement au calcul et n’est jamais affiché.
+   Rien n’est envoyé ni stocké : l’état vit uniquement en mémoire.
+------------------------------------------------------------------- */
+
+const THEMES = [
+  "Économie et fiscalité",
+  "Travail et protection sociale",
+  "Immigration et identité",
+  "Sécurité et justice",
+  "Écologie et énergie",
+  "Europe et souveraineté"
+];
+
+const QUESTIONS = [
+  // Économie et fiscalité
+  { t: 0, d: -1, text: "Les ménages aux revenus les plus élevés devraient payer davantage d’impôts qu’aujourd’hui." },
+  { t: 0, d: +1, text: "Le niveau global des dépenses publiques devrait être réduit." },
+  { t: 0, d: +1, text: "Les impôts sur les entreprises devraient être abaissés pour soutenir leur compétitivité." },
+  { t: 0, d: -1, text: "Certains secteurs clés (énergie, transports, autoroutes) devraient être gérés par l’État plutôt que par des entreprises privées." },
+  { t: 0, d: -1, text: "L’État devrait pouvoir plafonner les prix de certains produits de première nécessité." },
+  // Travail et protection sociale
+  { t: 1, d: -1, text: "L’âge légal de départ à la retraite devrait être abaissé." },
+  { t: 1, d: -1, text: "Le salaire minimum devrait être nettement augmenté." },
+  { t: 1, d: +1, text: "Les règles de licenciement devraient être assouplies pour faciliter les embauches." },
+  { t: 1, d: +1, text: "Le versement du RSA devrait être conditionné à des heures d’activité ou de formation." },
+  { t: 1, d: +1, text: "La durée légale du travail devrait être portée au-delà de 35 heures par semaine." },
+  // Immigration et identité
+  { t: 2, d: +1, text: "Le nombre de titres de séjour délivrés chaque année devrait être réduit." },
+  { t: 2, d: -1, text: "Les étrangers en situation irrégulière qui occupent un emploi devraient pouvoir obtenir plus facilement un titre de séjour." },
+  { t: 2, d: -1, text: "Les étrangers résidant légalement en France depuis plusieurs années devraient pouvoir voter aux élections locales." },
+  { t: 2, d: +1, text: "Pour les étrangers, l’accès aux prestations sociales devrait être soumis à une durée minimale de présence régulière en France." },
+  { t: 2, d: +1, text: "L’acquisition de la nationalité française par la naissance sur le territoire (droit du sol) devrait être restreinte." },
+  // Sécurité et justice
+  { t: 3, d: +1, text: "Des peines minimales devraient s’appliquer automatiquement en cas de récidive." },
+  { t: 3, d: +1, text: "Il faudrait construire davantage de places de prison." },
+  { t: 3, d: +1, text: "La majorité pénale devrait être abaissée à 16 ans." },
+  { t: 3, d: -1, text: "L’usage de la force par la police devrait être contrôlé par un organisme indépendant du ministère de l’Intérieur." },
+  { t: 3, d: -1, text: "La consommation de cannabis devrait être légalisée et encadrée par l’État." },
+  // Écologie et énergie
+  { t: 4, d: -1, text: "Les objectifs de réduction des émissions de gaz à effet de serre devraient être plus contraignants, même si cela pèse sur l’activité économique." },
+  { t: 4, d: -1, text: "Les activités les plus polluantes devraient être plus fortement taxées." },
+  { t: 4, d: -1, text: "Les vols intérieurs devraient être supprimés lorsqu’un trajet en train de moins de quatre heures existe." },
+  { t: 4, d: +1, text: "La construction de nouveaux réacteurs nucléaires devrait être accélérée." },
+  { t: 4, d: +1, text: "Les normes environnementales imposées aux agriculteurs devraient être allégées." },
+  // Europe et souveraineté
+  { t: 5, d: -1, text: "Les règles européennes limitant les déficits publics devraient être assouplies pour permettre davantage d’investissements publics." },
+  { t: 5, d: -1, text: "L’Union européenne devrait imposer des normes sociales minimales communes (salaire minimum, droits des travailleurs) à tous les États membres." },
+  { t: 5, d: -1, text: "L’Union européenne devrait fixer un taux minimal commun d’imposition des grandes entreprises." },
+  { t: 5, d: +1, text: "Le droit national devrait primer sur le droit européen en cas de conflit entre les deux." },
+  { t: 5, d: +1, text: "La contribution financière de la France au budget de l’Union européenne devrait être réduite." }
+];
+
+const ANSWERS = [
+  { v: -2, label: "Pas du tout d’accord" },
+  { v: -1, label: "Plutôt pas d’accord" },
+  { v:  0, label: "Sans avis" },
+  { v: +1, label: "Plutôt d’accord" },
+  { v: +2, label: "Tout à fait d’accord" }
+];
+
+const ZONES = [
+  { name: "Extrême gauche", min: -100, max: -71 },
+  { name: "Gauche",         min: -70,  max: -41 },
+  { name: "Centre gauche",  min: -40,  max: -16 },
+  { name: "Centre",         min: -15,  max: 15 },
+  { name: "Centre droit",   min: 16,   max: 40 },
+  { name: "Droite",         min: 41,   max: 70 },
+  { name: "Extrême droite", min: 71,   max: 100 }
+];
+
+// Mêmes arrêts de couleur que le dégradé CSS de la jauge.
+const GRADIENT = [
+  [0.00, [179, 18, 29]],
+  [0.16, [239, 68, 68]],
+  [0.34, [251, 113, 133]],
+  [0.50, [185, 166, 245]],
+  [0.66, [96, 165, 250]],
+  [0.84, [36, 86, 214]],
+  [1.00, [20, 33, 94]]
+];
+
+const MAX_ANSWER = 2;
+const AUTO_ADVANCE_MS = 260;
+
+/* ---------- État (en mémoire uniquement) ---------- */
+
+const state = {
+  order: [],                                   // ordre mélangé des questions
+  answers: new Array(QUESTIONS.length).fill(null), // réponse par index de question
+  pos: 0                                       // position courante dans l’ordre
+};
+let advanceTimer = null;
+let countRaf = null;
+
+/* ---------- Utilitaires ---------- */
+
+const $ = (id) => document.getElementById(id);
+
+function shuffle(n) {
+  const a = Array.from({ length: n }, (_, i) => i);
+  for (let i = n - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function colorAt(t) {
+  t = Math.min(1, Math.max(0, t));
+  for (let i = 1; i < GRADIENT.length; i++) {
+    const [p1, c1] = GRADIENT[i];
+    if (t <= p1) {
+      const [p0, c0] = GRADIENT[i - 1];
+      const k = (t - p0) / (p1 - p0);
+      const c = c0.map((v, j) => Math.round(v + (c1[j] - v) * k));
+      return "rgb(" + c.join(",") + ")";
+    }
+  }
+  return "rgb(" + GRADIENT[GRADIENT.length - 1][1].join(",") + ")";
+}
+
+const pct = (score) => (score + 100) / 2;            // -100..100 -> 0..100 %
+const fmt = (n) => (n > 0 ? "+" : n < 0 ? "−" : "") + Math.abs(n);
+const zoneOf = (score) => ZONES.find((z) => score >= z.min && score <= z.max);
+
+/* ---------- Calcul ---------- */
+
+// Score = somme(réponse × direction) ramenée sur [-100 ; +100], arrondie à l’entier.
+function scoreFor(indices) {
+  let sum = 0;
+  for (const i of indices) sum += (state.answers[i] || 0) * QUESTIONS[i].d;
+  return Math.round((sum / (indices.length * MAX_ANSWER)) * 100) || 0; // « || 0 » évite -0
+}
+
+function computeScores() {
+  const all = QUESTIONS.map((_, i) => i);
+  return {
+    total: scoreFor(all),
+    themes: THEMES.map((name, t) => ({ name, score: scoreFor(all.filter((i) => QUESTIONS[i].t === t)) }))
+  };
+}
+
+/* ---------- Navigation entre écrans ---------- */
+
+function show(id) {
+  for (const s of document.querySelectorAll(".screen")) s.classList.toggle("is-active", s.id === id);
+  window.scrollTo(0, 0);
+}
+
+/* ---------- Questionnaire ---------- */
+
+function start() {
+  state.order = shuffle(QUESTIONS.length);
+  state.answers.fill(null);
+  state.pos = 0;
+  show("screen-quiz");
+  renderQuestion(0);
+}
+
+function buildAnswers() {
+  const box = $("answers");
+  ANSWERS.forEach((a, i) => {
+    const b = document.createElement("button");
+    b.type = "button";
+    b.className = "answer";
+    b.setAttribute("role", "radio");
+    b.setAttribute("aria-checked", "false");
+    b.dataset.value = a.v;
+    b.innerHTML = '<span class="radio" aria-hidden="true"></span><span class="label"></span><span class="key" aria-hidden="true">' + (i + 1) + "</span>";
+    b.querySelector(".label").textContent = a.label;
+    b.addEventListener("click", () => choose(a.v));
+    box.appendChild(b);
+  });
+}
+
+function renderQuestion(dir) {
+  clearTimeout(advanceTimer);
+  const total = QUESTIONS.length;
+  const qi = state.order[state.pos];
+  const q = QUESTIONS[qi];
+  const current = state.answers[qi];
+  const last = state.pos === total - 1;
+
+  $("q-num").textContent = state.pos + 1;
+  const left = total - state.pos - 1;
+  $("q-left").textContent = left === 0 ? "Dernière question" : left === 1 ? "Encore 1 question" : "Encore " + left + " questions";
+  $("progress-bar").style.width = ((state.pos + 1) / total) * 100 + "%";
+  $("progress").setAttribute("aria-valuenow", state.pos + 1);
+
+  $("q-theme").textContent = THEMES[q.t];
+  $("q-text").textContent = q.text;
+
+  for (const b of $("answers").children) {
+    b.setAttribute("aria-checked", String(current !== null && Number(b.dataset.value) === current));
+  }
+
+  $("btn-prev").disabled = state.pos === 0;
+  const next = $("btn-next");
+  next.disabled = current === null;
+  next.textContent = last ? "Voir mon résultat" : "Suivant →";
+
+  if (dir !== 0) {
+    const body = $("quiz-body");
+    body.style.setProperty("--from", dir > 0 ? "18px" : "-18px");
+    body.classList.remove("swap");
+    void body.offsetWidth; // relance l’animation
+    body.classList.add("swap");
+  }
+}
+
+function choose(value) {
+  const qi = state.order[state.pos];
+  state.answers[qi] = value;
+  for (const b of $("answers").children) {
+    b.setAttribute("aria-checked", String(Number(b.dataset.value) === value));
+  }
+  $("btn-next").disabled = false;
+
+  // Avance automatique, sauf sur la dernière question (l’utilisateur valide lui-même).
+  clearTimeout(advanceTimer);
+  if (state.pos < QUESTIONS.length - 1) {
+    advanceTimer = setTimeout(goNext, AUTO_ADVANCE_MS);
+  }
+}
+
+function goNext() {
+  clearTimeout(advanceTimer);
+  if (state.answers[state.order[state.pos]] === null) return;
+  if (state.pos < QUESTIONS.length - 1) {
+    state.pos++;
+    renderQuestion(+1);
+  } else {
+    showResult();
+  }
+}
+
+function goPrev() {
+  clearTimeout(advanceTimer);
+  if (state.pos === 0) return;
+  state.pos--;
+  renderQuestion(-1);
+}
+
+/* ---------- Résultat ---------- */
+
+function buildGauge() {
+  const gauge = $("gauge");
+  const zones = $("zones");
+  ZONES.forEach((z, i) => {
+    // Frontière visuelle à mi-chemin entre deux zones entières (ex. -70,5).
+    const lo = i === 0 ? -100 : z.min - 0.5;
+    const hi = i === ZONES.length - 1 ? 100 : z.max + 0.5;
+    if (i > 0) {
+      const sep = document.createElement("div");
+      sep.className = "sep";
+      sep.style.left = pct(lo) + "%";
+      gauge.insertBefore(sep, gauge.firstChild);
+    }
+    const label = document.createElement("div");
+    label.className = "zone";
+    label.style.setProperty("--w", pct(hi) - pct(lo) + "%");
+    const dot = document.createElement("i");
+    dot.style.background = colorAt(pct((z.min + z.max) / 2) / 100);
+    const name = document.createElement("span");
+    name.textContent = z.name;
+    const range = document.createElement("small");
+    range.textContent = fmt(z.min) + " à " + fmt(z.max);
+    label.append(dot, name, range);
+    zones.appendChild(label);
+  });
+}
+
+function animateNumber(el, target) {
+  cancelAnimationFrame(countRaf);
+  const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (reduce || target === 0) { el.textContent = fmt(target); return; }
+  const duration = 1300;
+  const t0 = performance.now();
+  const step = (now) => {
+    const k = Math.min(1, (now - t0) / duration);
+    const eased = 1 - Math.pow(1 - k, 4);
+    el.textContent = fmt(Math.round(target * eased) || 0);
+    if (k < 1) countRaf = requestAnimationFrame(step);
+  };
+  countRaf = requestAnimationFrame(step);
+}
+
+function showResult() {
+  const { total, themes } = computeScores();
+  const zone = zoneOf(total);
+  const zoneIndex = ZONES.indexOf(zone);
+
+  $("zone-name").textContent = zone.name;
+  $("zone-dot").style.background = colorAt(pct(total) / 100);
+  $("gauge").setAttribute("aria-label", "Jauge de l’extrême gauche à l’extrême droite. Score : " + fmt(total) + ", zone : " + zone.name + ".");
+
+  // Mini-jauges par thème
+  const box = $("themes");
+  box.textContent = "";
+  for (const th of themes) {
+    const row = document.createElement("div");
+    row.className = "theme-row";
+    row.innerHTML =
+      '<div class="theme-top"><span class="name"></span><span class="val"><span class="z"></span><b></b></span></div>' +
+      '<div class="mini" role="img"><div class="dot"></div></div>';
+    const z = zoneOf(th.score);
+    row.querySelector(".name").textContent = th.name;
+    row.querySelector(".z").textContent = z.name;
+    row.querySelector("b").textContent = fmt(th.score);
+    row.querySelector(".mini").setAttribute("aria-label", th.name + " : " + fmt(th.score) + ", " + z.name);
+    row.querySelector(".dot").dataset.to = pct(th.score);
+    box.appendChild(row);
+  }
+
+  // Phrase de synthèse (factuelle)
+  const insight = $("insight");
+  insight.textContent = "";
+  const sorted = [...themes].sort((a, b) => a.score - b.score);
+  const lo = sorted[0], hi = sorted[sorted.length - 1];
+  const p1 = document.createElement("p");
+  if (hi.score - lo.score >= 30) {
+    const bold = (th) => Object.assign(document.createElement("b"), { textContent: th.name + " (" + fmt(th.score) + ")" });
+    if (lo.score < 0 && hi.score > 0) {
+      p1.append("Vos réponses sont les plus à gauche sur ", bold(lo), " et les plus à droite sur ", bold(hi), ".");
+    } else {
+      p1.append("Vos réponses vont du même côté sur tous les thèmes, avec un écart marqué entre ", bold(lo), " et ", bold(hi), ".");
+    }
+  } else {
+    p1.textContent = "Vos réponses sont assez homogènes d’un thème à l’autre.";
+  }
+  insight.appendChild(p1);
+  const neutral = state.answers.filter((a) => a === 0).length;
+  if (neutral >= 8) {
+    const p2 = document.createElement("p");
+    p2.textContent = "Vous avez répondu « Sans avis » à " + neutral + " affirmations sur " + QUESTIONS.length + " : cela rapproche mécaniquement le score du centre.";
+    insight.appendChild(p2);
+  }
+
+  // État de départ de l’animation : tout au centre
+  const cursor = $("cursor");
+  const labels = $("zones").children;
+  for (const l of labels) l.classList.remove("is-active");
+  cursor.style.transition = "none";
+  cursor.style.left = "50%";
+  $("score").textContent = "0";
+
+  show("screen-result");
+
+  void cursor.offsetWidth;
+  cursor.style.transition = "";
+  setTimeout(() => {
+    cursor.style.left = pct(total) + "%";
+    labels[zoneIndex].classList.add("is-active");
+    animateNumber($("score"), total);
+    for (const dot of box.querySelectorAll(".dot")) dot.style.left = dot.dataset.to + "%";
+  }, 250);
+}
+
+/* ---------- Hémicycle décoratif (accueil) ---------- */
+
+function buildHemicycle() {
+  const svg = $("hemicycle");
+  const NS = "http://www.w3.org/2000/svg";
+  const cx = 160, cy = 162;
+  const rows = [
+    { r: 62, n: 9 }, { r: 86, n: 13 }, { r: 110, n: 17 }, { r: 134, n: 21 }, { r: 158, n: 25 }
+  ];
+  rows.forEach((row, ri) => {
+    for (let i = 0; i < row.n; i++) {
+      const t = i / (row.n - 1);              // 0 = gauche, 1 = droite
+      const angle = Math.PI * (1 - t);
+      const c = document.createElementNS(NS, "circle");
+      c.setAttribute("cx", (cx + row.r * Math.cos(angle)).toFixed(1));
+      c.setAttribute("cy", (cy - row.r * Math.sin(angle)).toFixed(1));
+      c.setAttribute("r", 6.2);
+      c.setAttribute("fill", colorAt(t));
+      c.style.animationDelay = (t * 600 + ri * 60).toFixed(0) + "ms";
+      svg.appendChild(c);
+    }
+  });
+}
+
+/* ---------- Initialisation ---------- */
+
+buildAnswers();
+buildGauge();
+buildHemicycle();
+
+$("btn-start").addEventListener("click", start);
+$("btn-prev").addEventListener("click", goPrev);
+$("btn-next").addEventListener("click", goNext);
+$("btn-restart").addEventListener("click", start);
+$("btn-review").addEventListener("click", () => {
+  state.pos = 0;
+  show("screen-quiz");
+  renderQuestion(0);
+});
+
+// Raccourcis clavier : 1 à 5 pour répondre, flèches pour naviguer.
+document.addEventListener("keydown", (e) => {
+  if (!$("screen-quiz").classList.contains("is-active")) return;
+  if (e.metaKey || e.ctrlKey || e.altKey) return;
+  if (e.key >= "1" && e.key <= "5") {
+    choose(ANSWERS[Number(e.key) - 1].v);
+  } else if (e.key === "ArrowLeft") {
+    goPrev();
+  } else if (e.key === "ArrowRight") {
+    goNext();
+  }
+});
+</script>
+</body>
+</html>
