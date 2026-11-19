@@ -56,8 +56,12 @@ def verifier_asin(nav: Navigateur, asin: str, edition: str, tld: str, port: floa
                   entetes={"Referer": url, "X-Requested-With": "XMLHttpRequest"})
     if aod.ok:
         for o in _offres_aod(aod.texte, url, site, prio, edition, titre, tld, port):
-            if not any(abs((x.prix or 0) - (o.prix or 0)) < 0.01 and x.vendeur == o.vendeur for x in offres):
+            meme = next((x for x in offres if x.prix is not None and abs(x.prix - (o.prix or 0)) < 0.01), None)
+            if meme is None:
                 offres.append(o)
+            elif meme.vendeur.endswith("(à confirmer)"):
+                # Le panneau des vendeurs nous dit qui vend vraiment l'offre principale.
+                meme.vendeur, meme.confiance = o.vendeur, o.confiance
     return offres
 
 

@@ -16,6 +16,8 @@ REQUETES = ["manette dualsense gta vi", "manette ps5 gta 6 edition limitee"]
 
 _RE_VENDEUR = re.compile(r"\(([\d\s  .,]+)\)\s*([\d]{2,3}(?:[.,]\d)?)\s?%")
 _RE_VENDEUR_K = re.compile(r"([\d.,]+)\s?(k|K)?\s*\)?\s*·?\s*([\d]{2,3}(?:[.,]\d)?)\s?%\s*(?:d'évaluations positives|positive)")
+_RE_VENDEUR_PCT = re.compile(r"([\d]{2,3}(?:[.,]\d)?)\s?%\s*(?:d'évaluations positives|positives?|positive feedback)?\s*"
+                             r"\(([\d.,\s\u00a0\u202f]+)\s?(k|K)?\)")
 _RE_PROVENANCE = re.compile(r"(?:Provenance|Expédié depuis|Situé|Localisation)\s*:?\s*([A-Za-zÀ-ÿ' -]+)", re.I)
 _RE_PORT = re.compile(r"\+?\s*(\d+[.,]\d{2})\s?(?:€|EUR)\s*(?:de frais de |pour la )?livraison", re.I)
 
@@ -106,6 +108,11 @@ def _lire_vendeur(texte: str) -> tuple[int | None, float | None]:
     if m:
         nb = int(re.sub(r"\D", "", m.group(1)) or 0)
         return nb, float(m.group(2).replace(",", "."))
+    m = _RE_VENDEUR_PCT.search(texte)
+    if m:
+        base = float(re.sub(r"[\s\u00a0\u202f]", "", m.group(2)).replace(",", ".") or 0)
+        nb = int(base * 1000) if m.group(3) else int(base)
+        return nb, float(m.group(1).replace(",", "."))
     m = _RE_VENDEUR_K.search(texte)
     if m:
         base = float(m.group(1).replace(",", "."))

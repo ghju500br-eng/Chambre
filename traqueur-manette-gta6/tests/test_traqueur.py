@@ -162,6 +162,13 @@ class TestEbay(unittest.TestCase):
         self.assertEqual(ecartees, 3)  # vendeur trop récent, Chine, prix louche (la skin est ignorée d'office)
 
 
+class TestEbayVendeur(unittest.TestCase):
+    def test_formats_vendeur(self):
+        self.assertEqual(ebay._lire_vendeur("top_jeux (2 345) 99,6 %"), (2345, 99.6))
+        self.assertEqual(ebay._lire_vendeur("boutique 99,5 % d'évaluations positives (1,2 k)"), (1200, 99.5))
+        self.assertEqual(ebay._lire_vendeur("rien"), (None, None))
+
+
 class TestDealabs(unittest.TestCase):
     def test_deal_enseigne_seulement(self):
         import html as h
