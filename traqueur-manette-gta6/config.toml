@@ -1,0 +1,81 @@
+# ─────────────────────────────────────────────────────────────────────────────
+#  Réglages du traqueur de manette DualSense édition limitée GTA VI
+#  Tu peux modifier ce fichier directement sur GitHub (icône crayon) : la
+#  prochaine vérification prendra les nouveaux réglages en compte.
+# ─────────────────────────────────────────────────────────────────────────────
+
+[objectif]
+# Alerte immédiate (notif urgente) si une offre fiable et commandable coûte MOINS que ça, port compris.
+seuil_alerte = 100.0
+# Notif "bon compromis" (moins urgente) entre le seuil d'alerte et ce montant, seulement pour
+# PlayStation Direct et les enseignes qui vendent elles-mêmes (pas les vendeurs tiers).
+seuil_compromis = 110.0
+# Éditions qui t'intéressent : "blanche", "noire" (ou les deux).
+editions = ["blanche", "noire"]
+# Accepter les manettes d'occasion ? (false = neuf uniquement)
+accepter_occasion = false
+
+[ebay]
+# Un vendeur eBay n'est retenu que s'il a au moins ce % d'avis positifs...
+note_min_pourcent = 98.0
+# ...et au moins ce nombre d'évaluations.
+nb_evaluations_min = 100
+# En dessous de ce prix, une annonce de manette "neuve" est presque toujours une arnaque
+# ou pas la vraie manette (coque, skin, boîte vide...) : on l'ignore.
+prix_min_credible = 55.0
+# Pays d'expédition acceptés (pas d'import hors UE : douane + délais + risque de contrefaçon).
+pays_acceptes = ["France", "Belgique", "Allemagne", "Italie", "Espagne", "Pays-Bas", "Luxembourg",
+                 "Autriche", "Portugal", "Irlande"]
+
+[amazon]
+# Amazon.de / .it / .es livrent souvent en France : on les surveille aussi.
+surveiller_europe = true
+# Les frais de port vers la France ne sont pas affichés sans compte : estimation prudente.
+port_estime_europe = 7.0
+
+[bilans]
+# Petite notif silencieuse (sans son ni vibration) à chaque vérification horaire.
+bilan_horaire = true
+# Récap complet chaque jour à cette heure (heure de Paris), en notif + commentaire GitHub.
+heure_bilan_quotidien = 20
+
+# ─────────────────────────────────────────────────────────────────────────────
+#  Fiches produit connues (vérifiées). Le traqueur cherche aussi tout seul sur
+#  les moteurs de recherche des sites, mais une fiche directe est plus fiable.
+#  Pour en ajouter une : copie un bloc [[fiches]] et change l'URL.
+# ─────────────────────────────────────────────────────────────────────────────
+
+[[fiches]]
+site = "PlayStation Direct"
+edition = "blanche"
+url = "https://direct.playstation.com/fr-fr/buy-accessories/dualsense-wireless-controller-grand-theft-auto-vi-white-limited-edition-for-ps5-pc-mac-mobile"
+
+[[fiches]]
+site = "PlayStation Direct"
+edition = "noire"
+url = "https://direct.playstation.com/fr-fr/buy-accessories/dualsense-wireless-controller-grand-theft-auto-vi-black-limited-edition-for-ps5-pc-mac-mobile"
+
+[[fiches]]
+site = "PlayStation Store"
+edition = "blanche"
+url = "https://store.playstation.com/fr-fr/product/PSD001-PSDE02019_19-DUALSENSEG2TH2YE"
+
+[[fiches]]
+site = "Fnac"
+edition = "blanche"
+url = "https://www.fnac.com/a23608238/w-4"
+
+[[fiches]]
+site = "Alternate"
+edition = "blanche"
+url = "https://www.alternate.fr/html/product/100220501"
+
+[[fiches]]
+site = "TopAchat"
+edition = "blanche"
+url = "https://www.topachat.com/pages/detail2_cat_est_gaming_puis_rubrique_est_wg_pcgam_puis_ref_est_in20032780.html"
+
+# Fiches Amazon : on donne juste l'ASIN (le code produit Amazon), surveillé sur .fr (+ .de/.it/.es).
+[[amazon_asin]]
+asin = "B0HHS4DKRM"
+edition = "blanche"
