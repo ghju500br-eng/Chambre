@@ -1,0 +1,70 @@
+name: Traqueur manette GTA VI
+
+on:
+  schedule:
+    # Toutes les heures à la minute 7 (GitHub peut décaler de quelques minutes quand ses serveurs sont chargés).
+    - cron: "7 * * * *"
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "verifier = recherche normale, diagnostic = test des sites, test-notif = envoie une notif de test"
+        required: true
+        default: verifier
+        type: choice
+        options: [verifier, diagnostic, test-notif]
+      filtre:
+        description: "(diagnostic) ne tester que les sites dont le nom contient ce texte"
+        required: false
+        default: ""
+
+permissions:
+  contents: write   # pour enregistrer l'état et STATUT.md dans le repo
+  issues: write     # pour les alertes / bilans par issue (= email + notif appli GitHub)
+
+concurrency:
+  group: traqueur-manette-gta6
+  cancel-in-progress: false
+
+jobs:
+  traquer:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    defaults:
+      run:
+        working-directory: traqueur-manette-gta6
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: traqueur-manette-gta6/requirements.txt
+
+      - name: Dépendances
+        run: pip install -r requirements.txt
+
+      - name: Lancer
+        env:
+          NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          GITHUB_RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: python -m traqueur "${{ inputs.mode || 'verifier' }}" "${{ inputs.filtre }}"
+
+      - name: Enregistrer l'état
+        if: ${{ (inputs.mode || 'verifier') == 'verifier' }}
+        run: |
+          git config user.name "traqueur-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add etat STATUT.md
+          if git diff --cached --quiet; then
+            echo "Rien de nouveau à enregistrer."
+            exit 0
+          fi
+          git commit -q -m "Traqueur : bilan du $(TZ=Europe/Paris date '+%d/%m %Hh%M')"
+          for i in 1 2 3 4; do
+            git pull -q --rebase && git push -q && exit 0
+            sleep $((i * 5))
+          done
+          echo "Impossible d'enregistrer l'état après 4 essais" && exit 1
