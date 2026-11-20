@@ -1,6 +1,6 @@
 # 🎮 Traqueur — manette DualSense édition limitée GTA VI
 
-> Dernière vérification : **vendredi 20/11 à 17h58** (heure de Paris) · prochaine dans ~30 min — Sony est vérifié toutes les 8 min  
+> Dernière vérification : **vendredi 20/11 à 18h57** (heure de Paris) · prochaine dans ~30 min — Sony est vérifié toutes les 8 min  
 > Objectif : **moins de 100,00 € port compris**, uniquement chez des vendeurs fiables.  
 > Prix officiel Sony : 84,99 €.
 
@@ -52,4 +52,4 @@ _Aucune pour l'instant. Tu seras prévenu dès qu'il y en a une._
 |---|---:|---:|
 | 20/11 | 204,99 € | — |
 
-_Vérification faite en 14 s. Réglages : `config.toml`._
+_Vérification faite en 15 s. Réglages : `config.toml`._
