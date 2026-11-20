@@ -1,6 +1,11 @@
-"""Exécution horaire : vérifier, prévenir (sans spammer), faire les bilans, mémoriser."""
+"""Exécutions planifiées : vérifier, prévenir (sans spammer), faire les bilans, mémoriser.
+
+- lancer()       : vérification complète (toutes les 30 min) + bilans + page de statut
+- lancer_sony()  : passage rapide sur Sony seulement (toutes les 8 min), alertes uniquement
+"""
 from __future__ import annotations
 
+import json
 from datetime import datetime
 
 from . import config as C
@@ -43,7 +48,7 @@ def lancer() -> int:
     E.ajouter_historique(lignes)
     histo = E.lire_historique()
 
-    # Bilan horaire (discret) — inutile si on vient d'envoyer une alerte ou le message d'accueil
+    # Petit bilan discret (toutes les 30 min) — inutile si on vient d'envoyer une alerte ou l'accueil
     if cfg.bilan_horaire and not envoyes and not premier:
         if bilan.nb_sources_ok == 0:
             titre = f"⚠️ {R.heure(maintenant)} · aucun site n'a répondu (souci réseau ?)"
@@ -81,6 +86,25 @@ def lancer() -> int:
         etat["alertes_par_jour"].pop(j, None)
     E.sauver(etat)
     (C.RACINE / "STATUT.md").write_text(R.statut_md(bilan, cfg, maintenant, histo), encoding="utf-8")
+    return 0
+
+
+def lancer_sony() -> int:
+    """Passage rapide : seulement les fiches Sony. Pas de bilan ni de page de statut (ça, c'est toutes
+    les 30 min). L'état n'est réécrit que s'il s'est passé quelque chose, pour ne pas faire un commit
+    toutes les 8 minutes pour rien."""
+    etat = E.charger()
+    if "premier_lancement" not in etat:
+        return lancer()
+    cfg = C.charger()
+    maintenant = E.maintenant()
+    bilan = verifier(cfg, seulement_sony=True)
+    avant = json.dumps(etat.get("signalees", {}), sort_keys=True)
+    envoyes = signaler(bilan, cfg, etat, maintenant)
+    if envoyes or json.dumps(etat.get("signalees", {}), sort_keys=True) != avant:
+        E.sauver(etat)
+    dispo = [o for o in bilan.offres if o.disponible]
+    print(f"\nSony : {len(dispo)} édition(s) commandable(s), {envoyes} alerte(s) envoyée(s). ({bilan.duree:.0f} s)")
     return 0
 
 
@@ -157,7 +181,8 @@ def signaler(bilan: Bilan, cfg: C.Config, etat: dict, maintenant: datetime) -> i
 
 
 def accueil(bilan: Bilan, cfg: C.Config, etat: dict) -> None:
-    texte = ("Je vérifie toutes les heures PlayStation Direct, Amazon, Fnac, eBay et les grandes enseignes.\n"
+    texte = ("Je vérifie Sony (PlayStation) toutes les 8 minutes, et idealo (Amazon, Fnac…), les grandes "
+             "enseignes et Dealabs toutes les 30 minutes.\n"
              f"🚨 Notif urgente si une manette est dispo à moins de {R.euros(cfg.seuil_alerte)} chez un vendeur fiable.\n"
              "🔎 Petit bilan discret à chaque vérif, 📊 récap complet chaque soir.\n\n" + R.resume_court(bilan, cfg))
     N.push("✅ Traqueur manette GTA VI activé", texte, N.NORMALE, ["video_game"], clic=R.url_statut() or None)
@@ -180,7 +205,7 @@ def _issue_bilans(etat: dict) -> int | None:
 def test_notif() -> int:
     ok1 = N.push("🧪 Test : notif urgente (alerte)", "Si tu lis ça avec du son, les alertes marchent. 🎮",
                  N.URGENTE, ["rotating_light"])
-    ok2 = N.push("🧪 Test : notif discrète (bilan horaire)", "Celle-ci arrive sans son ni vibration.",
+    ok2 = N.push("🧪 Test : notif discrète (petit bilan)", "Celle-ci arrive sans son ni vibration.",
                  N.DISCRETE, ["mag"])
     print("Notifs envoyées." if ok1 and ok2 else "Échec : vérifie le secret NTFY_TOPIC.")
     return 0 if ok1 and ok2 else 1

@@ -66,19 +66,28 @@ def _executer(nom: str, fn) -> M.ResultatSource:
     return res
 
 
-def verifier(cfg: Config) -> Bilan:
+def _type(f: dict) -> int:
+    u = f["url"]
+    return 1 if "playstation.com" in u else 2 if "idealo.fr" in u else 3
+
+
+def fiches_a_verifier(cfg: Config, seulement_sony: bool = False) -> list[dict]:
+    """Sony d'abord, puis idealo, puis les enseignes. Passage rapide = Sony seulement."""
+    fiches = sorted(cfg.fiches, key=_type)
+    return [f for f in fiches if _type(f) == 1] if seulement_sony else fiches
+
+
+def verifier(cfg: Config, seulement_sony: bool = False) -> Bilan:
     debut = time.time()
     nav = Navigateur()
-    print(f"Vérification (empreinte navigateur : {nav.empreinte})", flush=True)
+    print(f"Vérification {'Sony seulement' if seulement_sony else 'complète'} "
+          f"(empreinte navigateur : {nav.empreinte})", flush=True)
     sources: list[M.ResultatSource] = []
     urls_connues = {f["url"] for f in cfg.fiches}
 
     # 1) Officiel Sony (playstation.com + PlayStation Store), 2) idealo (prix Amazon, Fnac & co),
     # 3) fiches connues des enseignes — dans cet ordre de priorité.
-    def _type(f):
-        u = f["url"]
-        return 1 if "playstation.com" in u else 2 if "idealo.fr" in u else 3
-    for f in sorted(cfg.fiches, key=_type):
+    for f in fiches_a_verifier(cfg, seulement_sony):
         nom = f"{f['site']} ({f['edition']})"
         if _type(f) == 1:
             sources.append(_executer(nom, lambda f=f: playstation.verifier_fiche(nav, f["url"], f["edition"])))
@@ -86,6 +95,11 @@ def verifier(cfg: Config) -> Bilan:
             sources.append(_executer(nom, lambda f=f: idealo.verifier(nav, f["url"], f["edition"])))
         else:
             sources.append(_executer(nom, lambda f=f: enseignes.verifier_fiche(nav, f["site"], f["url"], f["edition"])))
+
+    if seulement_sony:
+        bilan = trier(sources, cfg)
+        bilan.duree = round(time.time() - debut, 1)
+        return bilan
 
     # 4) Moteurs de recherche des enseignes (repère les nouvelles fiches)
     vues = set(urls_connues)

@@ -2,16 +2,19 @@ name: Traqueur manette GTA VI
 
 on:
   schedule:
-    # Toutes les heures à la minute 7 (GitHub peut décaler de quelques minutes quand ses serveurs sont chargés).
-    - cron: "7 * * * *"
+    # Sony (PlayStation) : toutes les 8 minutes (minutes 0, 8, 16, … 56).
+    - cron: "*/8 * * * *"
+    # Tout le reste (idealo, enseignes, Dealabs) + Sony + bilans : toutes les 30 minutes, calé entre
+    # deux passages Sony. GitHub peut décaler les horaires de quelques minutes quand il est chargé.
+    - cron: "4,34 * * * *"
   workflow_dispatch:
     inputs:
       mode:
-        description: "verifier = recherche normale, essai = recherche sans notif ni sauvegarde, diagnostic = test des sites, test-notif = notif de test"
+        description: "verifier = recherche complète, sony = Sony seulement, essai = recherche sans notif ni sauvegarde, diagnostic = test des sites, test-notif = notif de test"
         required: true
         default: verifier
         type: choice
-        options: [verifier, essai, diagnostic, test-notif]
+        options: [verifier, sony, essai, diagnostic, test-notif]
       filtre:
         description: "(diagnostic) ne tester que les sites dont le nom contient ce texte"
         required: false
@@ -29,6 +32,9 @@ jobs:
   traquer:
     runs-on: ubuntu-latest
     timeout-minutes: 20
+    env:
+      # Lancement manuel : le mode choisi. Planifié : "sony" pour le cron des 8 min, sinon recherche complète.
+      MODE: ${{ inputs.mode || (github.event.schedule == '*/8 * * * *' && 'sony') || 'verifier' }}
     defaults:
       run:
         working-directory: traqueur-manette-gta6
@@ -50,10 +56,10 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_REPOSITORY: ${{ github.repository }}
           GITHUB_RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-        run: python -m traqueur "${{ inputs.mode || 'verifier' }}" "${{ inputs.filtre }}"
+        run: python -m traqueur "$MODE" "${{ inputs.filtre }}"
 
       - name: Enregistrer l'état
-        if: ${{ (inputs.mode || 'verifier') == 'verifier' }}
+        if: ${{ env.MODE == 'verifier' || env.MODE == 'sony' }}
         run: |
           git config user.name "traqueur-bot"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"

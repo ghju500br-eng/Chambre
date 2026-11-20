@@ -80,7 +80,7 @@ def corps_issue_alerte(o: M.Offre, raison: str, maintenant: datetime) -> str:
 
 
 def resume_court(bilan: Bilan, cfg: Config) -> str:
-    """Quelques lignes pour la notif horaire."""
+    """Quelques lignes pour le petit bilan discret (toutes les 30 min)."""
     lignes = []
     for ed in cfg.editions:
         m = bilan.meilleure(ed)
@@ -144,7 +144,7 @@ def _tableau(offres: list[M.Offre]) -> list[str]:
 
 def statut_md(bilan: Bilan, cfg: Config, maintenant: datetime, histo: list[dict]) -> str:
     md = ["# 🎮 Traqueur — manette DualSense édition limitée GTA VI", "",
-          f"> Dernière vérification : **{date_longue(maintenant)}** (heure de Paris) · prochaine dans ~1 h  ",
+          f"> Dernière vérification : **{date_longue(maintenant)}** (heure de Paris) · prochaine dans ~30 min — Sony est vérifié toutes les 8 min  ",
           f"> Objectif : **moins de {euros(cfg.seuil_alerte)} port compris**, uniquement chez des vendeurs fiables.  ",
           f"> Prix officiel Sony : 84,99 €.", ""]
 

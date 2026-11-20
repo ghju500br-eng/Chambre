@@ -21,7 +21,7 @@ from traqueur.config import Config, charger  # noqa: E402
 from traqueur.etat import PARIS  # noqa: E402
 from traqueur.sources import amazon, dealabs, ebay, idealo, playstation  # noqa: E402
 from traqueur.sources.fiche import analyser_fiche, liens_produits  # noqa: E402
-from traqueur.verifier import trier  # noqa: E402
+from traqueur.verifier import fiches_a_verifier, trier  # noqa: E402
 
 
 def cfg_test(**kw) -> Config:
@@ -278,6 +278,23 @@ def bilan_avec(*offres, statut="ok"):
     return trier([s], cfg_test())
 
 
+class TestCadences(unittest.TestCase):
+    def test_passage_rapide_sony_seulement(self):
+        c = charger()
+        rapides = fiches_a_verifier(c, seulement_sony=True)
+        self.assertTrue(rapides and all("playstation.com" in f["url"] for f in rapides))
+        self.assertEqual({f["edition"] for f in rapides}, {"blanche", "noire"})
+        tout = fiches_a_verifier(c)
+        self.assertEqual(tout[:len(rapides)], rapides)          # Sony en premier
+        self.assertGreater(len(tout), len(rapides))
+
+    def test_workflow_cadences(self):
+        wf = (Path(__file__).resolve().parents[2] / ".github/workflows/traqueur-manette-gta6.yml").read_text()
+        self.assertIn('cron: "*/8 * * * *"', wf)
+        self.assertIn("github.event.schedule == '*/8 * * * *' && 'sony'", wf)
+        self.assertIn('cron: "4,34 * * * *"', wf)
+
+
 class TestAlertes(unittest.TestCase):
     def setUp(self):
         self.push = mock.patch.object(tourner.N, "push", return_value=True).start()
@@ -305,6 +322,17 @@ class TestAlertes(unittest.TestCase):
         self.assertEqual(tourner.signaler(b, cfg_test(), etat, self.t0 + timedelta(hours=1)), 0)
         # Baisse de prix → nouvelle alerte
         self.assertEqual(tourner.signaler(bilan_avec(offre(79.99)), cfg_test(), etat, self.t0 + timedelta(hours=2)), 1)
+
+    def test_passage_sony_ne_ferme_pas_les_autres(self):
+        # Une offre idealo signalée ne doit pas être déclarée disparue par un passage Sony seul.
+        etat = {}
+        tourner.signaler(bilan_avec(offre(84.99)), cfg_test(), etat, self.t0)
+        sony = trier([M.ResultatSource(nom="PlayStation (officiel) (blanche)", offres=[
+            offre(84.99, site="PlayStation (officiel)", url="https://www.playstation.com/x", dispo=False,
+                  confiance=M.OFFICIEL)])], cfg_test())
+        tourner.signaler(sony, cfg_test(), etat, self.t0 + timedelta(minutes=8))
+        self.fermer.assert_not_called()
+        self.assertFalse(any(v.get("absent_depuis") for v in etat["signalees"].values()))
 
     def test_disparition_puis_retour(self):
         etat = {}

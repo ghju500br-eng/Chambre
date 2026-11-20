@@ -1,6 +1,7 @@
 # 🎮 Traqueur de manette DualSense édition limitée GTA VI
 
-Ce robot cherche **toutes les heures** la manette PS5 DualSense édition limitée *Grand Theft Auto VI*
+Ce robot cherche la manette PS5 DualSense édition limitée *Grand Theft Auto VI* — **Sony toutes les 8 minutes**,
+**le reste toutes les 30 minutes** —
 (**blanche** et **noire**) chez des vendeurs fiables uniquement, et te prévient sur ton téléphone.
 Il tourne sur les serveurs de GitHub : ton téléphone peut être éteint, ça continue (les notifs arrivent
 quand tu le rallumes).
@@ -14,7 +15,7 @@ quand tu le rallumes).
 | Une manette est commandable à **moins de 100 €** port compris chez un vendeur fiable | 🚨 **Alerte urgente** (sonnerie) avec un bouton pour ouvrir l'offre | push ntfy + issue GitHub (email) |
 | Retour en stock ou baisse de prix d'une offre déjà vue | 🔁 / 📉 nouvelle alerte | push + issue |
 | PS Direct ou une enseigne la vend entre 100 et 110 € | 👌 notif « bon compromis » | push |
-| Chaque heure | 🔎 petit bilan **discret** (sans son ni vibration) | push |
+| Toutes les 30 min | 🔎 petit bilan **discret** (sans son ni vibration) | push |
 | Chaque soir à 20 h | 📊 récap de la journée | push + commentaire GitHub (email) |
 
 Jamais deux fois la même alerte. Si l'offre disparaît, son issue se ferme toute seule.
@@ -48,7 +49,7 @@ voie propre serait son API officielle (compte développeur gratuit) — le code 
    - Secret : ton sujet (exactement le même que dans l'appli) → **Add secret**
 4. Onglet **Actions → Traqueur manette GTA VI → Run workflow**, mode `test-notif` : tu dois recevoir 2 notifs
    (une qui sonne, une discrète).
-5. Relance avec le mode `verifier` pour la première vraie recherche. Ensuite c'est automatique toutes les heures.
+5. Relance avec le mode `verifier` pour la première vraie recherche. Ensuite c'est automatique (Sony toutes les 8 min, le reste toutes les 30 min).
 
 Sans l'étape ntfy, le traqueur marche quand même : les alertes et les bilans quotidiens arrivent
 par **email / appli GitHub** via les issues du repo (vérifie que tu « Watch » le repo).
@@ -56,16 +57,17 @@ par **email / appli GitHub** via les issues du repo (vérifie que tu « Watch »
 ## Réglages
 
 Tout est dans [`config.toml`](config.toml), modifiable directement sur GitHub (icône ✏️) :
-seuil d'alerte, éditions voulues, occasion oui/non, exigences eBay, bilan horaire on/off, heure du récap…
+seuil d'alerte, éditions voulues, occasion oui/non, exigences eBay, petit bilan on/off, heure du récap…
 Pour surveiller une nouvelle fiche produit, ajoute un bloc `[[fiches]]` avec son URL.
 
-Pour vérifier plus souvent (ex. toutes les 15 min), change la ligne `cron` dans
-`.github/workflows/traqueur-manette-gta6.yml` en `"*/15 * * * *"`.
+Les cadences sont les lignes `cron` de `.github/workflows/traqueur-manette-gta6.yml` :
+`"*/8 * * * *"` pour Sony, `"4,34 * * * *"` pour le reste.
 
 ## À savoir (honnêtement)
 
-- **Une vérif par heure peut rater un réassort éclair** : sur ces manettes, un retour en stock chez Fnac/Amazon
-  peut partir en 10-20 minutes. Passer à 15 min augmente les chances.
+- **GitHub ne garantit pas l'horaire à la minute** : quand ses serveurs sont chargés, un passage peut être
+  décalé de plusieurs minutes, voire sauté. En pratique, Sony est vérifié toutes les 8 à 15 minutes.
+- Un réassort éclair (10-20 min) chez une enseigne vérifiée toutes les 30 min peut encore passer entre les mailles.
 - **idealo a un léger décalage** : ses prix sont mis à jour par les marchands, pas en temps réel.
   Quand idealo ne donne pas les frais de port, le traqueur compte ≈ 8 € par prudence pour le seuil.
 - Si un site se met à bloquer, la page de statut l'indique (🧱 bloqué) au lieu de prétendre qu'il n'y a rien.
@@ -75,7 +77,8 @@ Pour vérifier plus souvent (ex. toutes les 15 min), change la ligne `cron` dans
 ## Pour les curieux
 
 ```
-python -m traqueur verifier     # vérification complète (ce que lance GitHub chaque heure)
+python -m traqueur verifier     # vérification complète (lancée par GitHub toutes les 30 min)
+python -m traqueur sony         # Sony seulement, alertes uniquement (toutes les 8 min)
 python -m traqueur essai        # vérification sans notif ni sauvegarde
 python -m traqueur diagnostic   # montre ce que chaque site renvoie (pour réparer un parseur)
 python -m traqueur test-notif   # envoie 2 notifs de test (NTFY_TOPIC requis)

@@ -33,7 +33,8 @@ pays_acceptes = ["France", "Belgique", "Allemagne", "Italie", "Espagne", "Pays-B
                  "Autriche", "Portugal", "Irlande"]
 
 [bilans]
-# Petite notif silencieuse (sans son ni vibration) à chaque vérification horaire.
+# Petite notif silencieuse (sans son ni vibration) à chaque vérification complète (toutes les 30 min).
+# (Les passages Sony toutes les 8 min n'envoient rien, sauf une alerte si la manette est dispo.)
 bilan_horaire = true
 # Récap complet chaque jour à cette heure (heure de Paris), en notif + commentaire GitHub.
 heure_bilan_quotidien = 20

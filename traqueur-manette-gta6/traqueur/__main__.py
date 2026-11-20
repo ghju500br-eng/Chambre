@@ -1,6 +1,7 @@
 """Point d'entrée : python -m traqueur [verifier|diagnostic|test-notif|essai]
 
-  verifier    vérification complète + notifs + bilans (lancé toutes les heures par GitHub)
+  verifier    vérification complète + notifs + bilans (lancé toutes les 30 min par GitHub)
+  sony        Sony seulement, alertes uniquement (lancé toutes les 8 min par GitHub)
   diagnostic  teste chaque site et affiche ce qu'on reçoit (pour réparer un parseur)
   test-notif  envoie deux notifs de test sur ton téléphone
   essai       vérification complète SANS notif ni sauvegarde (affiche juste le résultat)
@@ -15,6 +16,9 @@ def main() -> int:
     if commande == "verifier":
         from .tourner import lancer
         return lancer()
+    if commande == "sony":
+        from .tourner import lancer_sony
+        return lancer_sony()
     if commande == "diagnostic":
         arg = " ".join(sys.argv[2:]).strip()
         if arg.startswith("http"):
