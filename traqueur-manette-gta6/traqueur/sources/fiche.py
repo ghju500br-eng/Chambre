@@ -27,9 +27,11 @@ def analyser_fiche(html: str, url: str, *, site: str | None = None, edition: str
         for o in F.offres_jsonld(p):
             prix = F.lire_prix(o.get("price") or o.get("lowPrice")
                                or (o.get("priceSpecification") or {}).get("price"))
-            if prix is None:
-                continue
             dispo, libelle = F.dispo_schema(str(o.get("availability") or ""))
+            if prix is None and not o.get("availability"):
+                continue
+            if prix is None:
+                dispo = False   # pas de prix affiché = pas commandable (on garde la ligne pour le bilan)
             vendeur = o.get("seller") or {}
             vendeur = str(vendeur.get("name", "") if isinstance(vendeur, dict) else vendeur)
             livraison = _livraison_jsonld(o)

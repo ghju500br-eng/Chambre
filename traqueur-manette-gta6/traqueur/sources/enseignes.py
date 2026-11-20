@@ -6,19 +6,15 @@ from .. import modeles as M
 from . import ErreurSource
 from .fiche import analyser_fiche, liens_produits
 
-# (nom, URL de recherche). Certaines enseignes affichent leurs résultats en JavaScript :
-# dans ce cas le bilan l'indique honnêtement ("aucune fiche lisible").
+# (nom, URL de recherche). Seulement les enseignes qui acceptent qu'on lise leurs pages : Fnac, Cultura,
+# Carrefour, Darty et Cdiscount refusent les robots (vérifié le 20/11/2026), on respecte et on ne les
+# interroge pas. Leurs prix remontent quand même via idealo quand elles y sont référencées.
 RECHERCHES = [
-    ("Fnac", "https://www.fnac.com/SearchResult/ResultList.aspx?Search=dualsense+gta+vi"),
-    ("Micromania", "https://www.micromania.fr/on/demandware.store/Sites-Micromania-Site/fr_FR/Search-Show?q=dualsense+gta"),
-    ("E.Leclerc", "https://www.e.leclerc/recherche?q=dualsense%20gta"),
-    ("Boulanger", "https://www.boulanger.com/resultats?tr=dualsense+gta"),
-    ("Cultura", "https://www.cultura.com/search/results?search_query=dualsense%20gta"),
-    ("Carrefour", "https://www.carrefour.fr/s?q=dualsense+gta"),
-    ("Auchan", "https://www.auchan.fr/recherche?text=dualsense+gta"),
-    ("Darty", "https://www.darty.com/nav/recherche?text=dualsense+gta"),
-    ("Cdiscount", "https://www.cdiscount.com/search/10/dualsense+gta+vi.html"),
-    ("LDLC", "https://www.ldlc.com/recherche/dualsense%20gta/"),
+    ("Micromania", "https://www.micromania.fr/on/demandware.store/Sites-Micromania-Site/fr_FR/Search-Show?q=manette+gta+vi"),
+    ("E.Leclerc", "https://www.e.leclerc/recherche?q=manette%20dualsense%20gta%20vi"),
+    ("Boulanger", "https://www.boulanger.com/resultats?tr=manette+dualsense+gta+vi"),
+    ("Auchan", "https://www.auchan.fr/recherche?text=manette+dualsense+gta+vi"),
+    ("LDLC", "https://www.ldlc.com/recherche/dualsense%20gta%20vi/"),
 ]
 
 
@@ -28,9 +24,13 @@ def chercher(nav: Navigateur, nom: str, url_recherche: str, deja_vues: set[str])
         raise ErreurSource(rep.raison or f"HTTP {rep.statut}", bloque=rep.bloque)
     liens = [l for l in liens_produits(rep.texte, rep.url) if l not in deja_vues]
     if not liens:
-        # Parfois la page de recherche est elle-même une fiche (redirection directe) ou contient du JSON-LD.
-        offres, _ = analyser_fiche(rep.texte, rep.url, site=nom)
-        return offres, "" if offres else "aucune fiche lisible (pas référencée ou page dynamique)"
+        # Une page de résultats n'est jamais une fiche (Boulanger y met un faux "Product" à 19 €) :
+        # on ne la lit comme fiche que si le site nous a redirigés directement vers un produit.
+        if rep.url.split("?")[0] != url_recherche.split("?")[0]:
+            offres, _ = analyser_fiche(rep.texte, rep.url, site=nom)
+            if offres:
+                return offres, "redirigé vers la fiche"
+        return [], "pas référencée pour l'instant"
     offres: list[M.Offre] = []
     for lien in liens:
         deja_vues.add(lien)

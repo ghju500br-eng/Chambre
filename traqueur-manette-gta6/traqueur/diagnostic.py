@@ -111,16 +111,11 @@ def lancer(filtre: str = "") -> None:
 
 def detail(urls: list[str]) -> None:
     """Analyse approfondie d'URLs précises (pour écrire / réparer un parseur)."""
-    import json as _json
+    nav = Navigateur()
     for url in urls:
-        for empreinte in ("chrome", "safari18_0"):
-            nav = Navigateur()
-            nav.session = __import__("curl_cffi").requests.Session(impersonate=empreinte)
-            rep = nav.get(url, essais=1)
-            print("#" * 100)
-            print(f"[{empreinte}] {url}\n  → HTTP {rep.statut} bloqué={rep.bloque} {rep.raison} final={rep.url[:160]} taille={len(rep.texte)}")
-            if rep.ok:
-                break
+        rep = nav.get(url, essais=1)
+        print("#" * 100)
+        print(f"{url}\n  → HTTP {rep.statut} bloqué={rep.bloque} {rep.raison} final={rep.url[:160]} taille={len(rep.texte)}")
         if not rep.texte:
             continue
         soup = BeautifulSoup(rep.texte, "lxml")
@@ -137,6 +132,16 @@ def detail(urls: list[str]) -> None:
                 n += 1
                 if n >= 15:
                     break
+        # Bloc HTML autour des liens d'offres de comparateur (pour voir où sont vendeur / port).
+        for a in [a for a in soup.find_all("a", href=True) if "relocator" in a["href"]][:2]:
+            bloc = a
+            for _ in range(6):
+                if bloc.parent is None or len(str(bloc.parent)) > 6000:
+                    break
+                bloc = bloc.parent
+            texte_bloc = bloc.get_text(" | ", strip=True)
+            print(f"  offre-texte: {texte_bloc[:700]}")
+            print(f"  offre-html: {str(bloc)[:3000]!r}")
         brut = rep.texte
         vus = 0
         for m in re.finditer(r"(?i)(grand theft auto vi|gta vi)", brut):

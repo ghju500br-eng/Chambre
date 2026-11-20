@@ -1,4 +1,8 @@
-"""Couche HTTP : imite un vrai navigateur (empreinte TLS Chrome) et détecte les blocages anti-bot."""
+"""Couche HTTP : lit des pages publiques comme un navigateur, et détecte quand un site refuse les robots.
+
+Règle : si un site bloque (captcha, mur anti-bot, 403…), on respecte son choix. On n'essaie pas de
+contourner : la source est marquée « bloquée » dans le bilan et on passe à la suivante.
+"""
 from __future__ import annotations
 
 import random
@@ -7,9 +11,7 @@ from dataclasses import dataclass
 
 from curl_cffi import requests as creq
 
-# Empreintes navigateur proposées par curl_cffi : on en tire une au hasard par session,
-# ça passe beaucoup mieux qu'un simple `requests` face à DataDome / Akamai / Cloudflare.
-_EMPREINTES = ["chrome", "chrome131", "chrome124", "safari18_0"]
+_EMPREINTES = ["chrome"]
 
 _ENTETES = {
     "Accept-Language": "fr-FR,fr;q=0.9,en;q=0.6",
@@ -71,8 +73,9 @@ class Navigateur:
             if rep.ok:
                 return rep
             derniere = rep
-            # Inutile d'insister sur un 404, on réessaie seulement sur blocage/erreur temporaire.
-            if rep.statut == 404 or i == essais - 1:
+            # On ne réessaie que sur une panne réseau / erreur serveur passagère. Jamais sur un blocage
+            # (le site a dit non) ni sur un 404.
+            if rep.bloque or rep.statut == 404 or (rep.statut and rep.statut < 500) or i == essais - 1:
                 break
             time.sleep(2 + 3 * i + random.random() * 2)
         assert derniere is not None
