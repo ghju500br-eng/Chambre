@@ -7,11 +7,11 @@ on:
   workflow_dispatch:
     inputs:
       mode:
-        description: "verifier = recherche normale, diagnostic = test des sites, test-notif = envoie une notif de test"
+        description: "verifier = recherche normale, essai = recherche sans notif ni sauvegarde, diagnostic = test des sites, test-notif = notif de test"
         required: true
         default: verifier
         type: choice
-        options: [verifier, diagnostic, test-notif]
+        options: [verifier, essai, diagnostic, test-notif]
       filtre:
         description: "(diagnostic) ne tester que les sites dont le nom contient ce texte"
         required: false
