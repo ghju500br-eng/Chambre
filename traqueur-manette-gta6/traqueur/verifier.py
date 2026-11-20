@@ -9,7 +9,7 @@ from . import filtres as F
 from . import modeles as M
 from .config import Config
 from .http import Navigateur
-from .sources import ErreurSource, amazon, dealabs, ebay, enseignes, playstation
+from .sources import ErreurSource, amazon, dealabs, ebay, enseignes, idealo, playstation
 
 PORT_SI_INCONNU = 8.0   # quand les frais de port ne sont pas affichés, on suppose ça pour comparer au seuil
 
@@ -73,52 +73,39 @@ def verifier(cfg: Config) -> Bilan:
     sources: list[M.ResultatSource] = []
     urls_connues = {f["url"] for f in cfg.fiches}
 
-    # 1) Officiel Sony
-    for f in cfg.fiches:
-        if "playstation.com" in f["url"]:
-            sources.append(_executer(f"{f['site']} ({f['edition']})",
-                                     lambda f=f: playstation.verifier_fiche(nav, f["url"], f["edition"])))
+    # 1) Officiel Sony (playstation.com + PlayStation Store), 2) idealo (prix Amazon, Fnac & co),
+    # 3) fiches connues des enseignes — dans cet ordre de priorité.
+    def _type(f):
+        u = f["url"]
+        return 1 if "playstation.com" in u else 2 if "idealo.fr" in u else 3
+    for f in sorted(cfg.fiches, key=_type):
+        nom = f"{f['site']} ({f['edition']})"
+        if _type(f) == 1:
+            sources.append(_executer(nom, lambda f=f: playstation.verifier_fiche(nav, f["url"], f["edition"])))
+        elif _type(f) == 2:
+            sources.append(_executer(nom, lambda f=f: idealo.verifier(nav, f["url"], f["edition"])))
+        else:
+            sources.append(_executer(nom, lambda f=f: enseignes.verifier_fiche(nav, f["site"], f["url"], f["edition"])))
 
-    # 2) Amazon (.fr d'abord, puis Europe)
-    pays = ["fr"] + (["de", "it", "es"] if cfg.amazon_europe else [])
-    asins = {a["asin"]: a["edition"] for a in cfg.amazon_asins}
-    for tld in pays:
-        def _amazon(tld=tld):
-            offres = []
-            for asin, ed in list(asins.items()):
-                offres.extend(amazon.verifier_asin(nav, asin, ed, tld, cfg.amazon_port_europe))
-            return offres
-        sources.append(_executer(amazon.PAYS[tld][0], _amazon))
-
-    # Recherche Amazon.fr : repère d'autres fiches (ex. la noire si Amazon la référence un jour)
-    def _amazon_recherche():
-        trouves, _ = amazon.rechercher(nav, "fr", "manette dualsense gta vi edition limitee")
-        nouveaux = [(a, t) for a, t, _ in trouves if a not in asins][:3]
-        offres = []
-        for asin, titre in nouveaux:
-            offres.extend(amazon.verifier_asin(nav, asin, F.detecter_edition(titre), "fr", 0.0))
-        return offres, f"{len(trouves)} résultat(s), {len(nouveaux)} nouvelle(s) fiche(s)"
-    sources.append(_executer("Amazon.fr (recherche)", _amazon_recherche))
-
-    # 3) Fiches connues des autres enseignes (Fnac, Alternate, TopAchat...)
-    for f in cfg.fiches:
-        if "playstation.com" not in f["url"]:
-            sources.append(_executer(f"{f['site']} ({f['edition']})",
-                                     lambda f=f: enseignes.verifier_fiche(nav, f["site"], f["url"], f["edition"])))
-
-    # 4) eBay
-    def _ebay():
-        offres, ecartees = ebay.rechercher(nav, cfg)
-        return offres, f"{ecartees} annonce(s) écartée(s) (vendeur pas assez noté, hors UE, prix louche...)"
-    sources.append(_executer("eBay", _ebay))
-
-    # 5) Moteurs de recherche des enseignes
+    # 4) Moteurs de recherche des enseignes (repère les nouvelles fiches)
     vues = set(urls_connues)
     for nom, url in enseignes.RECHERCHES:
         sources.append(_executer(f"{nom} (recherche)", lambda nom=nom, url=url: enseignes.chercher(nav, nom, url, vues)))
 
-    # 6) Dealabs (signal communautaire)
+    # 5) Dealabs (signal communautaire)
     sources.append(_executer("Dealabs", lambda: dealabs.rechercher(nav)))
+
+    # 6) Accès directs à Amazon / eBay : désactivés par défaut (ils refusent les robots, on respecte).
+    if cfg.amazon_direct:
+        asins = {a["asin"]: a["edition"] for a in cfg.amazon_asins}
+        for tld in ["fr"] + (["de", "it", "es"] if cfg.amazon_europe else []):
+            sources.append(_executer(amazon.PAYS[tld][0], lambda tld=tld: [
+                o for asin, ed in asins.items() for o in amazon.verifier_asin(nav, asin, ed, tld, cfg.amazon_port_europe)]))
+    if cfg.ebay_direct:
+        def _ebay():
+            offres, ecartees = ebay.rechercher(nav, cfg)
+            return offres, f"{ecartees} annonce(s) écartée(s) (vendeur pas assez noté, hors UE, prix louche...)"
+        sources.append(_executer("eBay", _ebay))
 
     bilan = trier(sources, cfg)
     bilan.duree = round(time.time() - debut, 1)

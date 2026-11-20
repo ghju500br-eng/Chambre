@@ -19,7 +19,7 @@ from traqueur import modeles as M  # noqa: E402
 from traqueur import tourner  # noqa: E402
 from traqueur.config import Config, charger  # noqa: E402
 from traqueur.etat import PARIS  # noqa: E402
-from traqueur.sources import amazon, dealabs, ebay  # noqa: E402
+from traqueur.sources import amazon, dealabs, ebay, idealo, playstation  # noqa: E402
 from traqueur.sources.fiche import analyser_fiche, liens_produits  # noqa: E402
 from traqueur.verifier import trier  # noqa: E402
 
@@ -186,6 +186,49 @@ class TestDealabs(unittest.TestCase):
         offres = dealabs.analyser(page)
         self.assertEqual(len(offres), 1)
         self.assertEqual(offres[0].vendeur, "Fnac")
+
+
+def page_ps(dispo: str, autres: str = "") -> str:
+    ld = {"@context": "https://schema.org", "@type": "Product", "productID": "PSD001-PSDE02019_19-DUALSENSEGEYIO4E",
+          "name": "Manette sans fil DualSense® - Édition limitée Grand Theft Auto VI Black - pour PS5, PC, Mac et mobile\t\t",
+          "offers": {"@type": "Offer", "availability": f"https://schema.org/{dispo}", "url": "https://x"}}
+    return (f'<html><script type="application/ld+json">{json.dumps(ld)}</script><body>'
+            f'<p>Manette GTA VI Black</p>{autres}</body></html>')
+
+
+class TestPlayStation(unittest.TestCase):
+    URL = "https://www.playstation.com/fr-fr/accessories/x/grand-theft-auto-vi-black-limited-edition/"
+
+    def test_rupture(self):
+        # Page réelle : d'autres manettes en promo avec bouton d'achat → ne doit PAS compter.
+        autres = 'Non disponible à l\'achat {"type":"ADD_TO_CART"} {"discountedPrice":"54,99 €"}'
+        offres, _ = playstation.analyser(page_ps("OutOfStock", autres), self.URL, "PlayStation (officiel)", "noire")
+        self.assertEqual(len(offres), 1)
+        self.assertFalse(offres[0].disponible)
+        self.assertEqual(offres[0].etat_stock, "Non disponible à l'achat")
+        self.assertEqual(offres[0].prix, 84.99)
+
+    def test_en_stock(self):
+        offres, _ = playstation.analyser(page_ps("InStock"), self.URL, "PlayStation (officiel)", "noire")
+        self.assertTrue(offres[0].disponible)
+        self.assertEqual((offres[0].confiance, offres[0].total), (M.OFFICIEL, 84.99))
+
+
+IDEALO = """<html><div class="leadoutbox"><a class="leadoutbox-priceAmount"
+href="/relocator/relocate?offerKey=aaaaaaaaaaaaaaaaaaaa&price=189.99&productid=1&sid=1&type=offer">189,99 €</a>
+<div class="leadoutbox-shop">Marchand: <a href="/relocator/relocate?offerKey=aaaaaaaaaaaaaaaaaaaa&price=189.99&sid=1">cstech.store/fr</a></div></div>
+<a href="/relocator/relocate?offerKey=bbbbbbbbbbbbbbbbbbbb&price=84.99&sid=2&type=offer">Manette sans fil DualSense Édition limitée Grand Theft Auto VI Blanc</a>
+<astro-island props="{&quot;offerKey&quot;:[0,&quot;bbbbbbbbbbbbbbbbbbbb&quot;],&quot;shopName&quot;:[0,&quot;Amazon.fr&quot;]}"></astro-island>
+</html>"""
+
+
+class TestIdealo(unittest.TestCase):
+    def test_marchands(self):
+        offres, ecartees, _ = idealo.analyser(IDEALO, "https://www.idealo.fr/prix/1/x.html", "blanche")
+        self.assertEqual([o.vendeur for o in offres], ["Amazon.fr"])
+        self.assertEqual(offres[0].prix, 84.99)
+        self.assertIsNone(offres[0].livraison)   # port inconnu → compté ≈ 8 € pour le seuil
+        self.assertEqual(ecartees, ["cstech.store/fr"])
 
 
 def offre(prix, site="Fnac", url="https://www.fnac.com/a1", dispo=True, confiance=M.ENSEIGNE, ed="blanche", port=0.0):

@@ -13,7 +13,7 @@ from . import modeles as M
 DOMAINES_AUTORISES = {
     "direct.playstation.com": ("PlayStation Direct", M.OFFICIEL, 1),
     "store.playstation.com": ("PlayStation Store", M.OFFICIEL, 1),
-    "www.playstation.com": ("PlayStation", M.OFFICIEL, 1),
+    "www.playstation.com": ("PlayStation (officiel)", M.OFFICIEL, 1),
     "www.amazon.fr": ("Amazon.fr", M.ENSEIGNE, 1),
     "www.amazon.de": ("Amazon.de", M.ENSEIGNE, 2),
     "www.amazon.it": ("Amazon.it", M.ENSEIGNE, 2),
@@ -33,6 +33,8 @@ DOMAINES_AUTORISES = {
     "www.alternate.fr": ("Alternate", M.ENSEIGNE, 2),
     # Dealabs n'est pas un vendeur : ses deals ne sont retenus que si le marchand est une enseigne ci-dessus.
     "www.dealabs.com": ("Dealabs", M.ENSEIGNE, 2),
+    # idealo non plus : ses offres ne sont gardées que si le marchand est une enseigne ci-dessus.
+    "www.idealo.fr": ("idealo", M.ENSEIGNE, 2),
 }
 
 

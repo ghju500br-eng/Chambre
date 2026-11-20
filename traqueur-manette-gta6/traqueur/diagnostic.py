@@ -142,6 +142,13 @@ def detail(urls: list[str]) -> None:
             texte_bloc = bloc.get_text(" | ", strip=True)
             print(f"  offre-texte: {texte_bloc[:700]}")
             print(f"  offre-html: {str(bloc)[:3000]!r}")
+        import html as _html
+        brut_dec = _html.unescape(rep.texte)
+        for cle in list(dict.fromkeys(re.findall(r"offerKey=([0-9a-f]{16,})", rep.texte)))[:3]:
+            positions = [m.start() for m in re.finditer(cle, brut_dec)]
+            print(f"  offerKey {cle} : {len(positions)} occurrence(s)")
+            for pos in positions[1:3]:
+                print(f"    contexte: {brut_dec[max(0, pos - 1200):pos + 600]!r}")
         brut = rep.texte
         vus = 0
         for m in re.finditer(r"(?i)(grand theft auto vi|gta vi)", brut):

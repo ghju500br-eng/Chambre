@@ -1,7 +1,11 @@
-"""PlayStation Direct / PlayStation Store : le vendeur officiel Sony (seul à vendre la noire en France)."""
+"""PlayStation (vendeur officiel Sony, seul à vendre la noire en France).
+
+Depuis 2026, PlayStation Direct France est intégré à playstation.com / PlayStation Store : chaque fiche
+contient un bloc JSON-LD « Product » avec la disponibilité, et le bouton d'achat (« CTA ») dans les
+données de la page. Quand la manette n'est pas en vente, la page affiche « Non disponible à l'achat ».
+"""
 from __future__ import annotations
 
-import json
 import re
 
 from bs4 import BeautifulSoup
@@ -10,73 +14,56 @@ from .. import filtres as F
 from .. import modeles as M
 from ..http import Navigateur
 from . import ErreurSource
-from .fiche import analyser_fiche
 
-# API de stock utilisée par les pages PlayStation Direct (on essaie plusieurs identifiants de boutique).
-_API = "https://api.direct.playstation.com/commercewebservices/{base}/users/anonymous/products/productList"
-_BASES = ["ps-direct-fr", "ps-direct-fr-fr", "ps-direct-eu"]
-
-_RE_CODES = [
-    re.compile(r'data-product-code="(\w+)"'),
-    re.compile(r'"productCode"\s*:\s*"(\w+)"'),
-    re.compile(r'data-sku="(\w+)"'),
-    re.compile(r'"sku"\s*:\s*"(\w+)"'),
-]
+PRIX_OFFICIEL = 84.99
+_CTA_ACHAT = ("ADD_TO_CART", "PREORDER", "PRE_ORDER", "BUY_NOW", "PURCHASE")
 
 
 def verifier_fiche(nav: Navigateur, url: str, edition: str) -> tuple[list[M.Offre], str]:
-    """Renvoie (offres, remarque). Une remarque non vide = info utile pour le bilan."""
-    site = "PlayStation Store" if "store.playstation.com" in url else "PlayStation Direct"
+    site = "PlayStation Store" if "store.playstation.com" in url else "PlayStation (officiel)"
     rep = nav.get(url)
     if "queue-it" in rep.url or "queue-it.net" in rep.texte[:5000]:
-        # File d'attente virtuelle = Sony l'active pendant les grosses mises en vente.
-        return [M.Offre(site=site, edition=edition, titre=f"Manette GTA VI {M.EDITIONS[edition]}", url=url,
-                        prix=84.99, disponible=True, etat_stock="File d'attente active (vente en cours !)",
-                        vendeur="Sony", confiance=M.OFFICIEL, priorite_site=1,
-                        remarque="File d'attente PlayStation Direct active : une vente est probablement en cours.")], \
-            "file d'attente active"
+        # File d'attente virtuelle : Sony l'active pendant les grosses mises en vente.
+        return [_offre(site, edition, url, PRIX_OFFICIEL, True, "File d'attente active (vente en cours !)",
+                       "File d'attente PlayStation active : une vente est probablement en cours.")], "file d'attente active"
     if not rep.ok:
         raise ErreurSource(rep.raison or f"HTTP {rep.statut}", bloque=rep.bloque)
+    return analyser(rep.texte, url, site, edition)
 
-    offres, _ = analyser_fiche(rep.texte, url, site=site, edition=edition, exiger_gta=True)
-    for o in offres:
-        o.confiance, o.vendeur, o.priorite_site = M.OFFICIEL, "Sony", 1
-    if offres and any(o.etat_stock != "disponibilité inconnue" for o in offres):
-        return offres, ""
 
-    # Pas de données structurées exploitables : on interroge l'API de stock.
-    code = next((m.group(1) for r in _RE_CODES for m in [r.search(rep.texte)] if m), None)
-    if code:
-        for base in _BASES:
-            api = nav.get(_API.format(base=base), params={"fields": "BASIC", "productCodes": code},
-                          json_attendu=True, essais=1, entetes={"Origin": "https://direct.playstation.com",
-                                                               "Referer": url})
-            if not api.ok:
-                continue
-            try:
-                produit = (json.loads(api.texte).get("products") or [None])[0]
-            except Exception:
-                produit = None
-            if not produit:
-                continue
-            statut = ((produit.get("stock") or {}).get("stockLevelStatus") or "").lower()
-            prix = F.lire_prix((produit.get("price") or {}).get("value"))
-            dispo = statut in ("instock", "lowstock")
-            libelle = {"instock": "En stock", "lowstock": "Stock faible", "outofstock": "Rupture de stock"}.get(
-                statut, statut or "inconnu")
-            return [M.Offre(site=site, edition=edition, titre=produit.get("name") or f"Manette GTA VI {edition}",
-                            url=url, prix=prix or 84.99, disponible=dispo, etat_stock=libelle, vendeur="Sony",
-                            confiance=M.OFFICIEL, priorite_site=1)], ""
+def analyser(html: str, url: str, site: str, edition: str) -> tuple[list[M.Offre], str]:
+    soup = BeautifulSoup(html, "lxml")
+    produits = [p for p in F.produits_jsonld(soup) if F.est_la_manette(str(p.get("name") or ""))]
+    if not produits:
+        raise ErreurSource("fiche PlayStation illisible (structure changée ?)")
+    p = produits[0]
 
-    # Dernier recours : lecture du texte de la page (moins fiable, on ne déclenche pas d'alerte dessus).
-    soup = BeautifulSoup(rep.texte, "lxml")
-    texte = F.normaliser(soup.get_text(" ", strip=True))
-    prix = F.lire_prix(re.search(r"(\d{2,3},\d{2}) ?€", texte).group(1)) if re.search(r"(\d{2,3},\d{2}) ?€", texte) else None
-    rupture = any(m in texte for m in ("actuellement indisponible", "rupture de stock", "epuise", "bientot disponible"))
-    libelle = "Indisponible (lecture du texte)" if rupture else "État incertain (lecture du texte)"
-    return [M.Offre(site=site, edition=edition, titre=f"Manette GTA VI {M.EDITIONS[edition]}", url=url,
-                    prix=prix or 84.99, disponible=False, etat_stock=libelle, vendeur="Sony",
-                    confiance=M.OFFICIEL, priorite_site=1,
-                    remarque="Stock non confirmé par Sony : vérifie la page à la main si besoin.")], \
-        "stock lu dans le texte (incertain)"
+    # 1) Disponibilité et prix déclarés dans le JSON-LD
+    dispo_ld, prix_ld = None, None
+    for o in F.offres_jsonld(p):
+        if o.get("availability"):
+            dispo_ld = F.dispo_schema(str(o["availability"]))
+        prix_ld = prix_ld or F.lire_prix(o.get("price"))
 
+    # 2) Si le JSON-LD ne dit rien du stock : bouton d'achat + texte de la page. Seulement sur le
+    #    PlayStation Store (une fiche = un produit). Sur playstation.com, la page affiche aussi d'autres
+    #    manettes en promo : leurs boutons et leurs prix fausseraient le résultat.
+    if dispo_ld:
+        dispo, libelle = dispo_ld
+    elif site == "PlayStation Store":
+        ctas = set(re.findall(r'"type"\s*:\s*"([A-Z_]+)"', html))
+        texte = F.normaliser(soup.get_text(" ", strip=True))
+        non_dispo = "non disponible a l'achat" in texte or "actuellement indisponible" in texte
+        dispo = any(c in ctas for c in _CTA_ACHAT) and not non_dispo
+        libelle = "Bouton d'achat actif" if dispo else ("Non disponible à l'achat" if non_dispo else "Indisponible")
+    else:
+        dispo, libelle = False, "État inconnu (fiche sans info de stock)"
+    if libelle == "Rupture de stock":
+        libelle = "Non disponible à l'achat"
+    return [_offre(site, edition, url, prix_ld or PRIX_OFFICIEL, dispo, libelle)], ""
+
+
+def _offre(site, edition, url, prix, dispo, libelle, remarque="") -> M.Offre:
+    return M.Offre(site=site, edition=edition, titre=f"Manette DualSense GTA VI {M.EDITIONS.get(edition, '')} (officielle)",
+                   url=url, prix=prix, livraison=0.0, disponible=dispo, etat_stock=libelle, vendeur="Sony",
+                   confiance=M.OFFICIEL, priorite_site=1, remarque=remarque)
