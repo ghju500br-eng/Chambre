@@ -2,11 +2,12 @@ name: Traqueur manette GTA VI
 
 on:
   schedule:
-    # Sony (PlayStation) : toutes les 8 minutes (minutes 0, 8, 16, … 56).
-    - cron: "*/8 * * * *"
+    # Sony (PlayStation) : toutes les 5 minutes, le maximum autorisé par GitHub. GitHub saute une
+    # partie des créneaux quand il est chargé (constaté le 20/11 : ~1 sur 5 seulement), d'où ce réglage.
+    - cron: "*/5 * * * *"
     # Tout le reste (idealo, enseignes, Dealabs) + Sony + bilans : toutes les 30 minutes, calé entre
-    # deux passages Sony. GitHub peut décaler les horaires de quelques minutes quand il est chargé.
-    - cron: "4,34 * * * *"
+    # deux passages Sony et loin du début d'heure (le moment où GitHub est le plus chargé).
+    - cron: "17,47 * * * *"
   workflow_dispatch:
     inputs:
       mode:
@@ -33,8 +34,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     env:
-      # Lancement manuel : le mode choisi. Planifié : "sony" pour le cron des 8 min, sinon recherche complète.
-      MODE: ${{ inputs.mode || (github.event.schedule == '*/8 * * * *' && 'sony') || 'verifier' }}
+      # Lancement manuel : le mode choisi. Planifié : "sony" pour le cron des 5 min, sinon recherche complète.
+      MODE: ${{ inputs.mode || (github.event.schedule == '*/5 * * * *' && 'sony') || 'verifier' }}
     defaults:
       run:
         working-directory: traqueur-manette-gta6

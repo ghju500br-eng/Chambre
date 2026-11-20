@@ -1,6 +1,6 @@
 # 🎮 Traqueur de manette DualSense édition limitée GTA VI
 
-Ce robot cherche la manette PS5 DualSense édition limitée *Grand Theft Auto VI* — **Sony toutes les 8 minutes**,
+Ce robot cherche la manette PS5 DualSense édition limitée *Grand Theft Auto VI* — **Sony toutes les 5 minutes**,
 **le reste toutes les 30 minutes** —
 (**blanche** et **noire**) chez des vendeurs fiables uniquement, et te prévient sur ton téléphone.
 Il tourne sur les serveurs de GitHub : ton téléphone peut être éteint, ça continue (les notifs arrivent
@@ -49,7 +49,7 @@ voie propre serait son API officielle (compte développeur gratuit) — le code 
    - Secret : ton sujet (exactement le même que dans l'appli) → **Add secret**
 4. Onglet **Actions → Traqueur manette GTA VI → Run workflow**, mode `test-notif` : tu dois recevoir 2 notifs
    (une qui sonne, une discrète).
-5. Relance avec le mode `verifier` pour la première vraie recherche. Ensuite c'est automatique (Sony toutes les 8 min, le reste toutes les 30 min).
+5. Relance avec le mode `verifier` pour la première vraie recherche. Ensuite c'est automatique (Sony toutes les 5 min, le reste toutes les 30 min).
 
 Sans l'étape ntfy, le traqueur marche quand même : les alertes et les bilans quotidiens arrivent
 par **email / appli GitHub** via les issues du repo (vérifie que tu « Watch » le repo).
@@ -61,12 +61,13 @@ seuil d'alerte, éditions voulues, occasion oui/non, exigences eBay, petit bilan
 Pour surveiller une nouvelle fiche produit, ajoute un bloc `[[fiches]]` avec son URL.
 
 Les cadences sont les lignes `cron` de `.github/workflows/traqueur-manette-gta6.yml` :
-`"*/8 * * * *"` pour Sony, `"4,34 * * * *"` pour le reste.
+`"*/5 * * * *"` pour Sony (le minimum autorisé par GitHub), `"17,47 * * * *"` pour le reste.
 
 ## À savoir (honnêtement)
 
 - **GitHub ne garantit pas l'horaire à la minute** : quand ses serveurs sont chargés, un passage peut être
-  décalé de plusieurs minutes, voire sauté. En pratique, Sony est vérifié toutes les 8 à 15 minutes.
+  décalé de plusieurs minutes, voire sauté. Constaté le 20/11 : environ 1 créneau sur 5 seulement a tourné. D'où la demande à 5 min pour Sony ;
+  pour un horaire vraiment fiable, il faut un déclencheur externe (ex. cron-job.org qui lance le workflow).
 - Un réassort éclair (10-20 min) chez une enseigne vérifiée toutes les 30 min peut encore passer entre les mailles.
 - **idealo a un léger décalage** : ses prix sont mis à jour par les marchands, pas en temps réel.
   Quand idealo ne donne pas les frais de port, le traqueur compte ≈ 8 € par prudence pour le seuil.
@@ -78,7 +79,7 @@ Les cadences sont les lignes `cron` de `.github/workflows/traqueur-manette-gta6.
 
 ```
 python -m traqueur verifier     # vérification complète (lancée par GitHub toutes les 30 min)
-python -m traqueur sony         # Sony seulement, alertes uniquement (toutes les 8 min)
+python -m traqueur sony         # Sony seulement, alertes uniquement (toutes les 5 min)
 python -m traqueur essai        # vérification sans notif ni sauvegarde
 python -m traqueur diagnostic   # montre ce que chaque site renvoie (pour réparer un parseur)
 python -m traqueur test-notif   # envoie 2 notifs de test (NTFY_TOPIC requis)

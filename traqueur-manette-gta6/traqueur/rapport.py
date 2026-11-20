@@ -144,7 +144,7 @@ def _tableau(offres: list[M.Offre]) -> list[str]:
 
 def statut_md(bilan: Bilan, cfg: Config, maintenant: datetime, histo: list[dict]) -> str:
     md = ["# 🎮 Traqueur — manette DualSense édition limitée GTA VI", "",
-          f"> Dernière vérification : **{date_longue(maintenant)}** (heure de Paris) · prochaine dans ~30 min — Sony est vérifié toutes les 8 min  ",
+          f"> Dernière vérification : **{date_longue(maintenant)}** (heure de Paris) · prochaine dans ~30 min — Sony est vérifié toutes les 5 min (si GitHub suit)  ",
           f"> Objectif : **moins de {euros(cfg.seuil_alerte)} port compris**, uniquement chez des vendeurs fiables.  ",
           f"> Prix officiel Sony : 84,99 €.", ""]
 

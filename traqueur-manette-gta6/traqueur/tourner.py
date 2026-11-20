@@ -1,7 +1,7 @@
 """Exécutions planifiées : vérifier, prévenir (sans spammer), faire les bilans, mémoriser.
 
 - lancer()       : vérification complète (toutes les 30 min) + bilans + page de statut
-- lancer_sony()  : passage rapide sur Sony seulement (toutes les 8 min), alertes uniquement
+- lancer_sony()  : passage rapide sur Sony seulement (toutes les 5 min), alertes uniquement
 """
 from __future__ import annotations
 
@@ -92,7 +92,7 @@ def lancer() -> int:
 def lancer_sony() -> int:
     """Passage rapide : seulement les fiches Sony. Pas de bilan ni de page de statut (ça, c'est toutes
     les 30 min). L'état n'est réécrit que s'il s'est passé quelque chose, pour ne pas faire un commit
-    toutes les 8 minutes pour rien."""
+    toutes les 5 minutes pour rien."""
     etat = E.charger()
     if "premier_lancement" not in etat:
         return lancer()
@@ -181,7 +181,7 @@ def signaler(bilan: Bilan, cfg: C.Config, etat: dict, maintenant: datetime) -> i
 
 
 def accueil(bilan: Bilan, cfg: C.Config, etat: dict) -> None:
-    texte = ("Je vérifie Sony (PlayStation) toutes les 8 minutes, et idealo (Amazon, Fnac…), les grandes "
+    texte = ("Je vérifie Sony (PlayStation) toutes les 5 minutes, et idealo (Amazon, Fnac…), les grandes "
              "enseignes et Dealabs toutes les 30 minutes.\n"
              f"🚨 Notif urgente si une manette est dispo à moins de {R.euros(cfg.seuil_alerte)} chez un vendeur fiable.\n"
              "🔎 Petit bilan discret à chaque vérif, 📊 récap complet chaque soir.\n\n" + R.resume_court(bilan, cfg))

@@ -290,9 +290,9 @@ class TestCadences(unittest.TestCase):
 
     def test_workflow_cadences(self):
         wf = (Path(__file__).resolve().parents[2] / ".github/workflows/traqueur-manette-gta6.yml").read_text()
-        self.assertIn('cron: "*/8 * * * *"', wf)
-        self.assertIn("github.event.schedule == '*/8 * * * *' && 'sony'", wf)
-        self.assertIn('cron: "4,34 * * * *"', wf)
+        self.assertIn('cron: "*/5 * * * *"', wf)
+        self.assertIn("github.event.schedule == '*/5 * * * *' && 'sony'", wf)
+        self.assertIn('cron: "17,47 * * * *"', wf)
 
 
 class TestAlertes(unittest.TestCase):
