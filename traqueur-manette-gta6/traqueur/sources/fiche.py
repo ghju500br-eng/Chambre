@@ -17,6 +17,7 @@ def analyser_fiche(html: str, url: str, *, site: str | None = None, edition: str
     site = site or nom_site
     offres: list[M.Offre] = []
     nom_produit = ""
+    vendeur_page = _vendeur_affiche(soup)
 
     for p in F.produits_jsonld(soup):
         nom = str(p.get("name") or "")
@@ -24,6 +25,8 @@ def analyser_fiche(html: str, url: str, *, site: str | None = None, edition: str
             continue
         nom_produit = nom_produit or nom
         ed = edition or F.detecter_edition(nom)
+        if ed == "?":   # nom sans couleur (ex. Auchan) : on regarde la description
+            ed = F.detecter_edition(str(p.get("description") or ""))
         for o in F.offres_jsonld(p):
             prix = F.lire_prix(o.get("price") or o.get("lowPrice")
                                or (o.get("priceSpecification") or {}).get("price"))
@@ -33,7 +36,7 @@ def analyser_fiche(html: str, url: str, *, site: str | None = None, edition: str
             if prix is None:
                 dispo = False   # pas de prix affiché = pas commandable (on garde la ligne pour le bilan)
             vendeur = o.get("seller") or {}
-            vendeur = str(vendeur.get("name", "") if isinstance(vendeur, dict) else vendeur)
+            vendeur = str(vendeur.get("name", "") if isinstance(vendeur, dict) else vendeur) or vendeur_page
             livraison = _livraison_jsonld(o)
             etat_produit = str(o.get("itemCondition") or "")
             confiance = confiance_site
@@ -65,7 +68,17 @@ def _livraison_jsonld(o: dict) -> float | None:
                 return float(taux["value"])
             except (TypeError, ValueError):
                 return None
-    return 0.0
+    return None   # frais de port non indiqués : inconnus (on ne suppose pas « offerts »)
+
+
+_RE_VENDU_PAR = re.compile(r"Vendu (?:et expédié )?par\s*:?\s*([A-Za-z0-9][\w.&' -]{1,40}?)(?=\s{2}|\s*[|,·]|\s+(?:Expédi|Livr|Voir|\d)|$)")
+
+
+def _vendeur_affiche(soup) -> str:
+    """Vendeur affiché sur la page (« Vendu par MASS DISTRIB ») quand le JSON-LD ne le dit pas."""
+    texte = soup.get_text("  ", strip=True)
+    m = _RE_VENDU_PAR.search(texte)
+    return m.group(1).strip() if m else ""
 
 
 def _repli_meta(soup, url, site, edition, confiance, prio, exiger_gta) -> list[M.Offre]:

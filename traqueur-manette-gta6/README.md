@@ -21,15 +21,20 @@ Jamais deux fois la même alerte. Si l'offre disparaît, son issue se ferme tout
 
 ## Sites surveillés (et seulement eux)
 
-| Priorité | Sites | Règle de confiance |
+| Priorité | Source | Ce qu'on y lit |
 |---|---|---|
-| ⭐ 1 | **PlayStation Direct / PS Store** (seul vendeur de la noire en France), **Amazon.fr**, **Fnac** | vendu par le site lui-même (ou vendeur tiers garanti par Amazon/Fnac, clairement indiqué) |
-| 2 | Amazon.de / .it / .es (livrent en France), Micromania, E.Leclerc, Boulanger, Cultura, Carrefour, Auchan, Darty, Cdiscount, LDLC, TopAchat, Alternate | grandes enseignes |
-| 3 | **eBay** | achat immédiat, **neuf**, vendeur ≥ 98 % d'avis positifs **et** ≥ 100 évaluations, expédié depuis l'UE, prix crédible (pas de « manette à 30 € ») |
-| signal | Dealabs | un deal n'est retenu que si le marchand est une des enseignes ci-dessus |
+| ⭐ 1 | **Sony** : playstation.com + PlayStation Store (PlayStation Direct y est intégré en France) | stock officiel des deux éditions — seul vendeur de la **noire** en France |
+| ⭐ 1 | **idealo** (comparateur) | les offres d'**Amazon**, de la **Fnac** et des autres enseignes qui y sont référencées ; les petites boutiques inconnues sont écartées |
+| 2 | E.Leclerc, TopAchat (fiches de la blanche), Micromania, Boulanger, Auchan, LDLC (recherche auto) | grandes enseignes ; un vendeur tiers de leur marketplace est signalé comme tel |
+| signal | Dealabs | un deal n'est retenu que si le marchand est une enseigne fiable |
 
 Toute offre dont le lien ne pointe pas vers un de ces sites est jetée. Les coques, skins, boîtes vides,
 packs console, codes de jeu et annonces louches sont filtrés.
+
+**Sites qui refusent les robots** (testé le 20/11/2026 depuis les serveurs GitHub) : Amazon (captcha),
+Fnac, Darty (DataDome), eBay (403), Cultura, Carrefour, Cdiscount. Le traqueur **respecte ce refus** et ne
+cherche pas à le contourner : leurs prix arrivent via idealo et Dealabs quand ils y sont. Pour eBay, la
+voie propre serait son API officielle (compte développeur gratuit) — le code est prêt (`[ebay] acces_direct`).
 
 ## Installation (5 minutes, une seule fois)
 
@@ -37,9 +42,10 @@ packs console, codes de jeu et annonces louches sont filtrés.
    [iPhone](https://apps.apple.com/app/ntfy/id1625396347)). Gratuite, sans compte.
 2. Dans ntfy, appuie sur **+** et abonne-toi à ton sujet secret (un nom long et imprévisible, par ex.
    `manette-gta6-xxxxxxxxxxxx`). Garde-le pour toi : quiconque le connaît peut lire tes notifs.
-3. Sur GitHub, dans ce repo : **Settings → Secrets and variables → Actions → New repository secret**
+3. Sur GitHub, ouvre <https://github.com/ghju500br-eng/Chambre/settings/secrets/actions/new>
+   (ou **Settings → Secrets and variables → Actions → New repository secret**) :
    - Name : `NTFY_TOPIC`
-   - Secret : ton sujet (exactement le même que dans l'appli)
+   - Secret : ton sujet (exactement le même que dans l'appli) → **Add secret**
 4. Onglet **Actions → Traqueur manette GTA VI → Run workflow**, mode `test-notif` : tu dois recevoir 2 notifs
    (une qui sonne, une discrète).
 5. Relance avec le mode `verifier` pour la première vraie recherche. Ensuite c'est automatique toutes les heures.
@@ -59,10 +65,10 @@ Pour vérifier plus souvent (ex. toutes les 15 min), change la ligne `cron` dans
 ## À savoir (honnêtement)
 
 - **Une vérif par heure peut rater un réassort éclair** : sur ces manettes, un retour en stock chez Fnac/Amazon
-  peut partir en 10-20 minutes. Passer à 15 min augmente les chances (mais aussi le risque d'être bloqué).
-- **Certains sites bloquent les robots** (anti-bot type DataDome / captcha Amazon). Quand c'est le cas, la page
-  de statut l'indique (🧱 bloqué) au lieu de prétendre qu'il n'y a rien. Les autres sources prennent le relais.
-- Les frais de port des Amazon européens sont **estimés** (≈ 7 €) : vérifie avant de payer.
+  peut partir en 10-20 minutes. Passer à 15 min augmente les chances.
+- **idealo a un léger décalage** : ses prix sont mis à jour par les marchands, pas en temps réel.
+  Quand idealo ne donne pas les frais de port, le traqueur compte ≈ 8 € par prudence pour le seuil.
+- Si un site se met à bloquer, la page de statut l'indique (🧱 bloqué) au lieu de prétendre qu'il n'y a rien.
 - GitHub peut décaler les vérifs de quelques minutes quand ses serveurs sont chargés.
 - Le robot ne commande rien à ta place : il te prévient, c'est toi qui achètes.
 

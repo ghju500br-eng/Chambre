@@ -215,20 +215,41 @@ class TestPlayStation(unittest.TestCase):
 
 
 IDEALO = """<html><div class="leadoutbox"><a class="leadoutbox-priceAmount"
-href="/relocator/relocate?offerKey=aaaaaaaaaaaaaaaaaaaa&price=189.99&productid=1&sid=1&type=offer">189,99 €</a>
-<div class="leadoutbox-shop">Marchand: <a href="/relocator/relocate?offerKey=aaaaaaaaaaaaaaaaaaaa&price=189.99&sid=1">cstech.store/fr</a></div></div>
-<a href="/relocator/relocate?offerKey=bbbbbbbbbbbbbbbbbbbb&price=84.99&sid=2&type=offer">Manette sans fil DualSense Édition limitée Grand Theft Auto VI Blanc</a>
-<astro-island props="{&quot;offerKey&quot;:[0,&quot;bbbbbbbbbbbbbbbbbbbb&quot;],&quot;shopName&quot;:[0,&quot;Amazon.fr&quot;]}"></astro-island>
-</html>"""
+href="/relocator/relocate?offerKey=aaaa&price=189.99&sid=1&type=offer">189,99 €</a>
+<div class="leadoutbox-shop">Marchand: <a href="/relocator/relocate?offerKey=aaaa&price=189.99">cstech.store/fr</a></div></div>
+<ul>
+<li class="productOffers-listItem" data-mtrx-click='{"shop_name":"cstech.store/fr","products":[{"id":1,"price":189.99}]}'>
+ <span class="productOffers-listItemTitleInner" title="Manette Sony DualSense PS5 Édition Limitée GTA VI Blanc"></span></li>
+<li class="productOffers-listItem" data-mtrx-click='{"shop_name":"Amazon.fr","products":[{"id":1,"price":84.99}]}'>
+ <span class="productOffers-listItemTitleInner" title="Manette sans fil DualSense Édition limitée Grand Theft Auto VI Blanc"></span>
+ Livraison gratuite</li>
+<li class="productOffers-listItem" data-mtrx-click='{"shop_name":"Cdiscount.com (Marketplace)","products":[{"id":1,"price":289.0}]}'>
+ <span class="productOffers-listItemTitleInner" title="Manette sans fil DualSense - Édition limitée Grand Theft Auto VI - Blanche"></span>
+ + 4,99 € frais de livraison</li>
+</ul></html>"""
 
 
 class TestIdealo(unittest.TestCase):
     def test_marchands(self):
-        offres, ecartees, _ = idealo.analyser(IDEALO, "https://www.idealo.fr/prix/1/x.html", "blanche")
-        self.assertEqual([o.vendeur for o in offres], ["Amazon.fr"])
-        self.assertEqual(offres[0].prix, 84.99)
-        self.assertIsNone(offres[0].livraison)   # port inconnu → compté ≈ 8 € pour le seuil
+        offres, ecartees = idealo.analyser(IDEALO, "https://www.idealo.fr/prix/1/x.html", "blanche")
+        par_vendeur = {o.vendeur: o for o in offres}
+        self.assertEqual(set(par_vendeur), {"Amazon.fr", "Cdiscount.com (Marketplace)"})
+        self.assertEqual((par_vendeur["Amazon.fr"].total, par_vendeur["Amazon.fr"].confiance), (84.99, M.ENSEIGNE))
+        cd = par_vendeur["Cdiscount.com (Marketplace)"]
+        self.assertEqual((cd.total, cd.confiance), (293.99, M.MARKETPLACE))
         self.assertEqual(ecartees, ["cstech.store/fr"])
+
+    def test_fiche_auchan_vendeur_tiers(self):
+        html = """<html><script type="application/ld+json">{"@type":"Product",
+        "name":"SONY Manette sans fil DualSense Édition limitée Grand Theft Auto VI",
+        "description":"Manette blanche en édition limitée","offers":{"@type":"Offer","price":"299.99",
+        "availability":"https://schema.org/InStock"}}</script><body><p>299,99€ / pce</p>
+        <p>Vendu par MASS DISTRIB</p><p>Expédié sous 48h</p></body></html>"""
+        offres, _ = analyser_fiche(html, "https://www.auchan.fr/x/pr-C1", site="Auchan")
+        self.assertEqual(len(offres), 1)
+        o = offres[0]
+        self.assertEqual((o.vendeur, o.confiance, o.edition), ("MASS DISTRIB", M.MARKETPLACE, "blanche"))
+        self.assertIsNone(o.livraison)
 
 
 def offre(prix, site="Fnac", url="https://www.fnac.com/a1", dispo=True, confiance=M.ENSEIGNE, ed="blanche", port=0.0):

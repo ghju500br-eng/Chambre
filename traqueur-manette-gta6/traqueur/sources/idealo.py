@@ -1,13 +1,15 @@
 """idealo.fr (comparateur) : récupère les offres des marchands référencés, dont Amazon et la Fnac.
 
 idealo ne vend rien : une offre n'est retenue que si le marchand est une enseigne de la liste blanche
-(Amazon, Fnac, Micromania, Leclerc…). Les petites boutiques inconnues sont écartées.
+(Amazon, Fnac, Cdiscount, Micromania, Leclerc…). Les boutiques inconnues sont écartées.
+
+Structure de la page (vérifiée le 20/11/2026) : chaque offre est un <li class="productOffers-listItem">
+avec un attribut data-mtrx-click='{"shop_name": "...", "products": [{"price": 249.99, ...}]}'.
 """
 from __future__ import annotations
 
-import html as html_lib
+import json
 import re
-from urllib.parse import parse_qs, urlparse
 
 from bs4 import BeautifulSoup
 
@@ -16,78 +18,66 @@ from .. import modeles as M
 from ..http import Navigateur
 from . import ErreurSource
 
-# Noms de champs possibles pour le marchand dans les données de la page (format variable).
-_RE_SHOP = [
-    re.compile(r'"shopName"\s*:\s*(?:\[\s*0\s*,\s*)?"([^"]{2,60})"'),
-    re.compile(r'"shop_name"\s*:\s*(?:\[\s*0\s*,\s*)?"([^"]{2,60})"'),
-    re.compile(r'"merchantName"\s*:\s*(?:\[\s*0\s*,\s*)?"([^"]{2,60})"'),
-    re.compile(r'data-shop-name="([^"]{2,60})"'),
-    re.compile(r'Marchand\s*:?\s*(?:<[^>]+>\s*)*([^<]{2,60})<'),
-    re.compile(r'Vendu par\s*:?\s*(?:<[^>]+>\s*)*([^<]{2,60})<'),
-]
-_RE_PORT = re.compile(r'(?:"shippingCosts?"|"deliveryCosts?")\s*:\s*(?:\[\s*0\s*,\s*)?"?([\d.,]+)')
+_RE_PORT = re.compile(r"(\d+[.,]\d{2})\s?€\s*(?:de\s+)?(?:frais de (?:port|livraison)|livraison)", re.I)
 
 
 def verifier(nav: Navigateur, url: str, edition: str) -> tuple[list[M.Offre], str]:
     rep = nav.get(url)
     if not rep.ok:
         raise ErreurSource(rep.raison or f"HTTP {rep.statut}", bloque=rep.bloque)
-    offres, ecartees, marchands = analyser(rep.texte, url, edition)
-    detail = f"{len(offres) + len(ecartees)} offre(s) : {len(offres)} chez des enseignes fiables"
+    offres, ecartees = analyser(rep.texte, url, edition)
+    total = len(offres) + len(ecartees)
+    detail = f"{total} offre(s), {len(offres)} chez des enseignes fiables"
     if ecartees:
-        detail += " · écartées (marchand non vérifié) : " + ", ".join(sorted(set(ecartees)))[:120]
-    return offres, detail
+        detail += " · écartées (marchand non vérifié) : " + ", ".join(sorted(set(ecartees)))
+    return offres, detail[:200]
 
 
-def analyser(page: str, url: str, edition: str) -> tuple[list[M.Offre], list[str], dict]:
+def analyser(page: str, url: str, edition: str) -> tuple[list[M.Offre], list[str]]:
     soup = BeautifulSoup(page, "lxml")
-    brut = html_lib.unescape(page)
-    vues: dict[str, dict] = {}
-    for a in soup.find_all("a", href=True):
-        if "relocator" not in a["href"]:
-            continue
-        q = parse_qs(urlparse(a["href"]).query)
-        cle = (q.get("offerKey") or [""])[0]
-        prix = F.lire_prix((q.get("price") or [""])[0])
-        if not cle or prix is None:
-            continue
-        o = vues.setdefault(cle, {"prix": prix, "titre": "", "marchand": ""})
-        texte = a.get_text(" ", strip=True).replace("­", "")
-        classes = " ".join(a.get("class") or [])
-        parent_classes = " ".join(a.parent.get("class") or []) if a.parent else ""
-        if "shop" in classes.lower() or "shop" in parent_classes.lower():
-            o["marchand"] = o["marchand"] or texte
-        elif len(texte) > len(o["titre"]) and not re.fullmatch(r"[\d\s,.€]+", texte) and "Voir" not in texte:
-            o["titre"] = texte
+    lignes = []   # (marchand, prix, titre, texte de la ligne)
+    for li in soup.select("li.productOffers-listItem"):
+        try:
+            data = json.loads(li.get("data-mtrx-click") or "{}")
+        except Exception:
+            data = {}
+        marchand = str(data.get("shop_name") or "").strip()
+        produits = data.get("products") or [{}]
+        prix = F.lire_prix(produits[0].get("price"))
+        if prix is None:
+            lien = li.select_one("a[href*='relocator']")
+            m = re.search(r"[?&]price=([\d.]+)", lien["href"]) if lien else None
+            prix = F.lire_prix(m.group(1)) if m else None
+        titre_el = li.select_one(".productOffers-listItemTitleInner")
+        titre = (titre_el.get("title") or titre_el.get_text(" ", strip=True)) if titre_el else ""
+        if marchand and prix is not None:
+            lignes.append((marchand, prix, titre.replace("­", ""), li.get_text(" ", strip=True)))
 
-    # Marchand manquant : on le cherche dans les données autour de l'identifiant de l'offre.
-    for cle, o in vues.items():
-        if o["marchand"]:
-            continue
-        for m in re.finditer(re.escape(cle), brut):
-            zone = brut[max(0, m.start() - 2500):m.end() + 2500]
-            for r in _RE_SHOP:
-                t = r.search(zone)
-                if t and t.group(1).strip():
-                    o["marchand"] = t.group(1).strip()
-                    break
-            if o["marchand"]:
-                mp = _RE_PORT.search(zone)
-                o["port"] = F.lire_prix(mp.group(1)) if mp else None
-                break
+    if not lignes:
+        # Repli : encart "meilleur prix" en haut de page.
+        boite = soup.select_one(".leadoutbox")
+        if boite:
+            marchand = boite.select_one(".leadoutbox-shop a")
+            prix = boite.select_one(".leadoutbox-priceAmount")
+            if marchand and prix and F.lire_prix(prix.get_text()):
+                lignes.append((marchand.get_text(strip=True), F.lire_prix(prix.get_text()), "", boite.get_text(" ")))
 
     offres, ecartees = [], []
-    for o in vues.values():
-        marchand = o["marchand"] or "marchand inconnu"
-        if o["titre"] and not F.est_la_manette(o["titre"]):
+    for marchand, prix, titre, texte in lignes:
+        if titre and not F.est_la_manette(titre):
             continue
         if not F.vendeur_est_enseigne(marchand):
             ecartees.append(marchand)
             continue
-        marketplace = "marketplace" in marchand.lower() or "vendeur tiers" in marchand.lower()
+        if re.search(r"livraison gratuite|frais de (?:port|livraison) offerts", texte, re.I):
+            port = 0.0
+        else:
+            mp = _RE_PORT.search(texte)
+            port = F.lire_prix(mp.group(1)) if mp else None
+        marketplace = "marketplace" in marchand.lower()
         offres.append(M.Offre(
-            site=f"idealo → {marchand}", edition=edition, titre=o["titre"] or "Manette GTA VI", url=url,
-            prix=o["prix"], livraison=o.get("port"), disponible=True, etat_stock="En vente (selon idealo)",
-            vendeur=marchand, confiance=M.MARKETPLACE if marketplace else M.ENSEIGNE, priorite_site=2,
-            remarque="Prix relevé par idealo : vérifie sur le site du marchand avant de payer."))
-    return offres, ecartees, vues
+            site=f"idealo → {marchand}", edition=edition, titre=titre or "Manette DualSense GTA VI", url=url,
+            prix=prix, livraison=port, disponible=True, etat_stock="En vente (selon idealo)", vendeur=marchand,
+            confiance=M.MARKETPLACE if marketplace else M.ENSEIGNE, neuf=not F.est_occasion(texte[:300]),
+            priorite_site=2, remarque="Prix relevé par idealo : vérifie sur le site du marchand avant de payer."))
+    return offres, ecartees
