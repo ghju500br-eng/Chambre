@@ -1,6 +1,6 @@
 # 🎮 Traqueur — manette DualSense édition limitée GTA VI
 
-> Dernière vérification : **vendredi 20/11 à 19h58** (heure de Paris) · prochaine dans ~30 min — Sony est vérifié toutes les 8 min  
+> Dernière vérification : **vendredi 20/11 à 20h59** (heure de Paris) · prochaine dans ~30 min — Sony est vérifié toutes les 8 min  
 > Objectif : **moins de 100,00 € port compris**, uniquement chez des vendeurs fiables.  
 > Prix officiel Sony : 84,99 €.
 
@@ -12,7 +12,6 @@ _Aucune pour l'instant. Tu seras prévenu dès qu'il y en a une._
 
 | Total | Édition | Site | Vendeur | Stock | Lien |
 |---:|---|---|---|---|---|
-| **204,99 €** | ⚪ Blanche | idealo → Darty.com (Marketplace) | Darty.com (Marketplace) | En vente (selon idealo) · port inconnu | [voir](https://www.idealo.fr/prix/214031142/sony-dualsense-wireless-controller-grand-theft-auto-vi-white-limited-edition.html) |
 | **259,00 €** | ⚪ Blanche | idealo → Fnac.com (Marketplace) | Fnac.com (Marketplace) | En vente (selon idealo) · port inconnu | [voir](https://www.idealo.fr/prix/214031142/sony-dualsense-wireless-controller-grand-theft-auto-vi-white-limited-edition.html) |
 | **299,99 €** | ⚪ Blanche | E.Leclerc | PIX.L DISTRIBUTION | En stock · port inconnu | [voir](https://www.e.leclerc/fp/manette-sans-fil-dualsense-edition-limitee-grand-theft-auto-vi-white-ps5-0711719072836) |
 | **299,99 €** | ❔ Édition à confirmer | Auchan | MASS DISTRIB | En stock · port inconnu | [voir](https://www.auchan.fr/sony-manette-sans-fil-dualsense-edition-limitee-grand-theft-auto-vi/pr-C1894272) |
@@ -35,11 +34,11 @@ _Aucune pour l'instant. Tu seras prévenu dès qu'il y en a une._
 | PlayStation (officiel) (noire) | ✅ | 1 |  |
 | PlayStation Store (blanche) | ✅ | 1 |  |
 | PlayStation Store (noire) | ✅ | 1 |  |
-| idealo (blanche) | ✅ | 2 | 4 offre(s), 2 chez des enseignes fiables · écartées (marchand non vérifié) : cstech.store/fr, kaufland.fr |
+| idealo (blanche) | ✅ | 1 | 3 offre(s), 1 chez des enseignes fiables · écartées (marchand non vérifié) : cstech.store/fr, kaufland.fr |
 | idealo (noire) | ✅ | 0 | 1 offre(s), 0 chez des enseignes fiables · écartées (marchand non vérifié) : kaufland.fr |
 | TopAchat (blanche) | ✅ | 1 |  |
 | E.Leclerc (blanche) | ✅ | 2 |  |
-| Micromania (recherche) | 🧱 bloqué | 0 | bloqué par Imperva |
+| Micromania (recherche) | ✅ | 0 | pas référencée pour l'instant |
 | E.Leclerc (recherche) | ✅ | 0 | pas référencée pour l'instant |
 | Boulanger (recherche) | ✅ | 0 | pas référencée pour l'instant |
 | Auchan (recherche) | ✅ | 1 | 1 fiche(s) trouvée(s) |
@@ -52,4 +51,4 @@ _Aucune pour l'instant. Tu seras prévenu dès qu'il y en a une._
 |---|---:|---:|
 | 20/11 | 204,99 € | — |
 
-_Vérification faite en 13 s. Réglages : `config.toml`._
+_Vérification faite en 23 s. Réglages : `config.toml`._
