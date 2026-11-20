@@ -107,3 +107,47 @@ def lancer(filtre: str = "") -> None:
             for s in a["scripts"]:
                 print(f"  script~ {s}")
         sys.stdout.flush()
+
+
+def detail(urls: list[str]) -> None:
+    """Analyse approfondie d'URLs précises (pour écrire / réparer un parseur)."""
+    import json as _json
+    for url in urls:
+        for empreinte in ("chrome", "safari18_0"):
+            nav = Navigateur()
+            nav.session = __import__("curl_cffi").requests.Session(impersonate=empreinte)
+            rep = nav.get(url, essais=1)
+            print("#" * 100)
+            print(f"[{empreinte}] {url}\n  → HTTP {rep.statut} bloqué={rep.bloque} {rep.raison} final={rep.url[:160]} taille={len(rep.texte)}")
+            if rep.ok:
+                break
+        if not rep.texte:
+            continue
+        soup = BeautifulSoup(rep.texte, "lxml")
+        print(f"  titre={(soup.title.get_text(strip=True) if soup.title else '')[:150]!r}")
+        for s in soup.find_all("script", type="application/ld+json"):
+            brut = (s.string or s.get_text() or "").strip()
+            if '"Product"' in brut or '"Offer"' in brut:
+                print(f"  JSON-LD: {brut[:2500]}")
+        n = 0
+        for a in soup.find_all("a", href=True):
+            t = " ".join(filter(None, [a.get_text(" ", strip=True), a.get("title", ""), a.get("aria-label", "")]))
+            if re.search(r"(?i)(grand theft auto|gta ?vi|gta ?6)", t):
+                print(f"  lien: {a['href'][:200]} | {t[:160]}")
+                n += 1
+                if n >= 15:
+                    break
+        brut = rep.texte
+        vus = 0
+        for m in re.finditer(r"(?i)(grand theft auto vi|gta vi)", brut):
+            a = max(0, m.start() - 250)
+            print(f"  html~ {brut[a:m.end() + 350]!r}")
+            vus += 1
+            if vus >= 5:
+                break
+        for motif in ("data-vue3", "offerList", "productOffers", "Prix total", "s-card", "s-item", "aod-offer",
+                      "productTile", "product-tile", "basePrice", "discountedPrice", "addToCart", "ADD_TO_CART"):
+            i = brut.find(motif)
+            if i >= 0:
+                print(f"  motif {motif} @ {i}: {brut[max(0, i - 150):i + 450]!r}")
+        sys.stdout.flush()

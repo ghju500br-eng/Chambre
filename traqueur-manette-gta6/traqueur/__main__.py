@@ -16,8 +16,13 @@ def main() -> int:
         from .tourner import lancer
         return lancer()
     if commande == "diagnostic":
-        from .diagnostic import lancer as diag
-        diag(sys.argv[2] if len(sys.argv) > 2 else "")
+        arg = " ".join(sys.argv[2:]).strip()
+        if arg.startswith("http"):
+            from .diagnostic import detail
+            detail(arg.split())
+        else:
+            from .diagnostic import lancer as diag
+            diag(arg)
         return 0
     if commande == "test-notif":
         from .tourner import test_notif

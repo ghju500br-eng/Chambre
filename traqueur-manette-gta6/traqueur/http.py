@@ -72,7 +72,7 @@ class Navigateur:
                 return rep
             derniere = rep
             # Inutile d'insister sur un 404, on réessaie seulement sur blocage/erreur temporaire.
-            if rep.statut == 404:
+            if rep.statut == 404 or i == essais - 1:
                 break
             time.sleep(2 + 3 * i + random.random() * 2)
         assert derniere is not None
