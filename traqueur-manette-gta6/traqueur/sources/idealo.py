@@ -18,7 +18,9 @@ from .. import modeles as M
 from ..http import Navigateur
 from . import ErreurSource
 
-_RE_PORT = re.compile(r"(\d+[.,]\d{2})\s?€\s*(?:de\s+)?(?:frais de (?:port|livraison)|livraison)", re.I)
+# Frais de port affichés comme « + 4,99 € frais de livraison ». Sans le « + », on ne devine pas
+# (le prix de l'article est souvent juste avant le mot « Livraison »).
+_RE_PORT = re.compile(r"\+\s*(\d+[.,]\d{2})\s?€\s*(?:de\s+)?(?:frais de (?:port|livraison)|livraison)", re.I)
 
 
 def verifier(nav: Navigateur, url: str, edition: str) -> tuple[list[M.Offre], str]:
@@ -74,6 +76,8 @@ def analyser(page: str, url: str, edition: str) -> tuple[list[M.Offre], list[str
         else:
             mp = _RE_PORT.search(texte)
             port = F.lire_prix(mp.group(1)) if mp else None
+            if port is not None and abs(port - prix) < 0.01:
+                port = None
         marketplace = "marketplace" in marchand.lower()
         offres.append(M.Offre(
             site=f"idealo → {marchand}", edition=edition, titre=titre or "Manette DualSense GTA VI", url=url,

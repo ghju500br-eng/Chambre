@@ -103,8 +103,14 @@ def _repli_meta(soup, url, site, edition, confiance, prio, exiger_gta) -> list[M
     dispo, libelle = F.dispo_schema(dispo_brut.replace(" ", "").replace("instock", "InStock"))
     if not dispo_brut:
         dispo, libelle = False, "disponibilité inconnue"
-    return [M.Offre(site=site, edition=edition or F.detecter_edition(titre), titre=titre, url=url,
-                    prix=prix, livraison=0.0, disponible=dispo, etat_stock=libelle, vendeur=site,
+    ed = edition or F.detecter_edition(titre)
+    if ed == "?":
+        ed = F.detecter_edition(meta("og:description", "description") or "")
+    vendeur = _vendeur_affiche(soup)
+    if vendeur and not F.vendeur_est_enseigne(vendeur) and confiance == M.ENSEIGNE:
+        confiance = M.MARKETPLACE
+    return [M.Offre(site=site, edition=ed, titre=titre, url=url,
+                    prix=prix, livraison=None, disponible=dispo, etat_stock=libelle, vendeur=vendeur or site,
                     confiance=confiance, priorite_site=prio)]
 
 

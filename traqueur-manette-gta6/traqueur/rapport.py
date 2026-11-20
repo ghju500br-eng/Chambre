@@ -74,6 +74,8 @@ def corps_issue_alerte(o: M.Offre, raison: str, maintenant: datetime) -> str:
             f"| **Repérée** | {date_longue(maintenant)} |\n\n"
             f"## 👉 [Ouvrir l'offre]({o.url})\n\n"
             + (f"> ⚠️ {o.remarque}\n\n" if o.remarque else "")
+            # Mention du propriétaire du repo = notif garantie (appli GitHub + email), même sans ntfy.
+            + (f"@{os.environ['GITHUB_REPOSITORY_OWNER']} fonce ! 🏃\n\n" if os.environ.get("GITHUB_REPOSITORY_OWNER") else "")
             + "_Cette issue se ferme toute seule quand l'offre disparaît._")
 
 

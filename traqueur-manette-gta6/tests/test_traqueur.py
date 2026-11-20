@@ -239,6 +239,22 @@ class TestIdealo(unittest.TestCase):
         self.assertEqual((cd.total, cd.confiance), (293.99, M.MARKETPLACE))
         self.assertEqual(ecartees, ["cstech.store/fr"])
 
+    def test_prix_pas_pris_pour_le_port(self):
+        html = """<li class="productOffers-listItem" data-mtrx-click='{"shop_name":"Fnac.com","products":[{"price":289.0}]}'>
+        <span class="productOffers-listItemTitleInner" title="Manette DualSense Grand Theft Auto VI Blanche"></span>
+        289,00 € Livraison : ven. 27/11</li>"""
+        offres, _ = idealo.analyser(html, "https://www.idealo.fr/prix/1/x.html", "blanche")
+        self.assertIsNone(offres[0].livraison)
+        self.assertEqual(offres[0].total, 289.0)
+
+    def test_fiche_auchan_meta_vendeur_tiers(self):
+        html = """<html><head><meta property="og:title" content="SONY Manette sans fil DualSense Édition limitée Grand Theft Auto VI">
+        <meta property="og:description" content="Manette blanche édition limitée"><meta property="product:price:amount" content="299.99">
+        <meta property="product:availability" content="instock"></head><body><p>Vendu par MASS DISTRIB</p></body></html>"""
+        offres, _ = analyser_fiche(html, "https://www.auchan.fr/x/pr-C1", site="Auchan")
+        o = offres[0]
+        self.assertEqual((o.vendeur, o.confiance, o.edition, o.livraison), ("MASS DISTRIB", M.MARKETPLACE, "blanche", None))
+
     def test_fiche_auchan_vendeur_tiers(self):
         html = """<html><script type="application/ld+json">{"@type":"Product",
         "name":"SONY Manette sans fil DualSense Édition limitée Grand Theft Auto VI",
