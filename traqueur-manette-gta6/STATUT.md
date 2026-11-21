@@ -1,6 +1,6 @@
 # 🎮 Traqueur — manette DualSense édition limitée GTA VI
 
-> Dernière vérification : **samedi 21/11 à 09h55** (heure de Paris) · prochaine dans ~30 min — Sony est vérifié toutes les 5 min (si GitHub suit)  
+> Dernière vérification : **samedi 21/11 à 10h53** (heure de Paris) · prochaine dans ~30 min — Sony est vérifié toutes les 5 min (si GitHub suit)  
 > Objectif : **moins de 100,00 € port compris**, uniquement chez des vendeurs fiables.  
 > Prix officiel Sony : 84,99 €.
 
@@ -12,8 +12,8 @@ _Aucune pour l'instant. Tu seras prévenu dès qu'il y en a une._
 
 | Total | Édition | Site | Vendeur | Stock | Lien |
 |---:|---|---|---|---|---|
+| **204,99 €** | ⚪ Blanche | idealo → Fnac.com (Marketplace) | Fnac.com (Marketplace) | En vente (selon idealo) · port inconnu | [voir](https://www.idealo.fr/prix/214031142/sony-dualsense-wireless-controller-grand-theft-auto-vi-white-limited-edition.html) |
 | **204,99 €** | ⚪ Blanche | idealo → Darty.com (Marketplace) | Darty.com (Marketplace) | En vente (selon idealo) · port inconnu | [voir](https://www.idealo.fr/prix/214031142/sony-dualsense-wireless-controller-grand-theft-auto-vi-white-limited-edition.html) |
-| **259,00 €** | ⚪ Blanche | idealo → Fnac.com (Marketplace) | Fnac.com (Marketplace) | En vente (selon idealo) · port inconnu | [voir](https://www.idealo.fr/prix/214031142/sony-dualsense-wireless-controller-grand-theft-auto-vi-white-limited-edition.html) |
 | **299,99 €** | ⚪ Blanche | E.Leclerc | PIX.L DISTRIBUTION | En stock · port inconnu | [voir](https://www.e.leclerc/fp/manette-sans-fil-dualsense-edition-limitee-grand-theft-auto-vi-white-ps5-0711719072836) |
 | **299,99 €** | ❔ Édition à confirmer | Auchan | MASS DISTRIB | En stock · port inconnu | [voir](https://www.auchan.fr/sony-manette-sans-fil-dualsense-edition-limitee-grand-theft-auto-vi/pr-C1894272) |
 
