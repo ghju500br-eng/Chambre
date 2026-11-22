@@ -1,65 +1,65 @@
 {
  "dernier_bilan_quotidien": "2026-11-21",
- "derniere_verif": "2026-11-22T12:25:18.099947+01:00",
+ "derniere_verif": "2026-11-22T13:26:23.882938+01:00",
  "issue_bilans": 1,
- "nb_verifs": 51,
+ "nb_verifs": 52,
  "premier_lancement": "2026-11-20T06:39:09.303073+01:00",
  "signalees": {},
  "sources": {
   "Auchan (recherche)": {
-   "dernier_ok": "2026-11-22T12:25:18.099947+01:00",
+   "dernier_ok": "2026-11-22T13:26:23.882938+01:00",
    "statut": "ok"
   },
   "Boulanger (recherche)": {
-   "dernier_ok": "2026-11-22T12:25:18.099947+01:00",
+   "dernier_ok": "2026-11-22T13:26:23.882938+01:00",
    "statut": "ok"
   },
   "Dealabs": {
-   "dernier_ok": "2026-11-22T12:25:18.099947+01:00",
+   "dernier_ok": "2026-11-22T13:26:23.882938+01:00",
    "statut": "ok"
   },
   "E.Leclerc (blanche)": {
-   "dernier_ok": "2026-11-22T12:25:18.099947+01:00",
+   "dernier_ok": "2026-11-22T13:26:23.882938+01:00",
    "statut": "ok"
   },
   "E.Leclerc (recherche)": {
-   "dernier_ok": "2026-11-22T12:25:18.099947+01:00",
+   "dernier_ok": "2026-11-22T13:26:23.882938+01:00",
    "statut": "ok"
   },
   "LDLC (recherche)": {
-   "dernier_ok": "2026-11-22T12:25:18.099947+01:00",
+   "dernier_ok": "2026-11-22T13:26:23.882938+01:00",
    "statut": "ok"
   },
   "Micromania (recherche)": {
-   "dernier_ok": "2026-11-22T12:25:18.099947+01:00",
+   "dernier_ok": "2026-11-22T13:26:23.882938+01:00",
    "statut": "ok"
   },
   "PlayStation (officiel) (blanche)": {
-   "dernier_ok": "2026-11-22T12:25:18.099947+01:00",
+   "dernier_ok": "2026-11-22T13:26:23.882938+01:00",
    "statut": "ok"
   },
   "PlayStation (officiel) (noire)": {
-   "dernier_ok": "2026-11-22T12:25:18.099947+01:00",
+   "dernier_ok": "2026-11-22T13:26:23.882938+01:00",
    "statut": "ok"
   },
   "PlayStation Store (blanche)": {
-   "dernier_ok": "2026-11-22T12:25:18.099947+01:00",
+   "dernier_ok": "2026-11-22T13:26:23.882938+01:00",
    "statut": "ok"
   },
   "PlayStation Store (noire)": {
-   "dernier_ok": "2026-11-22T12:25:18.099947+01:00",
+   "dernier_ok": "2026-11-22T13:26:23.882938+01:00",
    "statut": "ok"
   },
   "TopAchat (blanche)": {
-   "dernier_ok": "2026-11-22T12:25:18.099947+01:00",
+   "dernier_ok": "2026-11-22T13:26:23.882938+01:00",
    "statut": "ok"
   },
   "idealo (blanche)": {
-   "dernier_ok": "2026-11-22T12:25:18.099947+01:00",
+   "dernier_ok": "2026-11-22T13:26:23.882938+01:00",
    "statut": "ok"
   },
   "idealo (noire)": {
-   "dernier_ok": "2026-11-22T12:25:18.099947+01:00",
+   "dernier_ok": "2026-11-22T13:26:23.882938+01:00",
    "statut": "ok"
   }
  }
