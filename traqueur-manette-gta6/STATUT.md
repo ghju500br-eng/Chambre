@@ -1,6 +1,6 @@
 # 🎮 Traqueur — manette DualSense édition limitée GTA VI
 
-> Dernière vérification : **dimanche 22/11 à 17h26** (heure de Paris) · prochaine dans ~30 min — Sony est vérifié toutes les 5 min (si GitHub suit)  
+> Dernière vérification : **dimanche 22/11 à 18h25** (heure de Paris) · prochaine dans ~30 min — Sony est vérifié toutes les 5 min (si GitHub suit)  
 > Objectif : **moins de 100,00 € port compris**, uniquement chez des vendeurs fiables.  
 > Prix officiel Sony : 84,99 €.
 
@@ -21,6 +21,8 @@ _Aucune pour l'instant. Tu seras prévenu dès qu'il y en a une._
 
 | Site | Édition | Prix | Stock | Lien |
 |---|---|---:|---|---|
+| PlayStation (officiel) | ⚪ Blanche | 84,99 € | ❌ Non disponible à l'achat | [voir](https://www.playstation.com/fr-fr/accessories/dualsense-wireless-controller/buy-now/product/grand-theft-auto-vi-white-limited-edition/) |
+| PlayStation (officiel) | ⚫ Noire | 84,99 € | ❌ Non disponible à l'achat | [voir](https://www.playstation.com/fr-fr/accessories/dualsense-wireless-controller/buy-now/product/grand-theft-auto-vi-black-limited-edition/) |
 | PlayStation Store | ⚪ Blanche | 84,99 € | ❌ Non disponible à l'achat | [voir](https://store.playstation.com/fr-fr/product/PSD001-PSDE02019_19-DUALSENSEG2TH2YE) |
 | PlayStation Store | ⚫ Noire | 84,99 € | ❌ Non disponible à l'achat | [voir](https://store.playstation.com/fr-fr/product/PSD001-PSDE02019_19-DUALSENSEGEYIO4E) |
 | TopAchat | ⚪ Blanche | 99,99 € | ❌ Rupture de stock | [voir](https://www.topachat.com/pages/detail2_cat_est_gaming_puis_rubrique_est_wg_pcgam_puis_ref_est_in20032780.html) |
@@ -29,15 +31,15 @@ _Aucune pour l'instant. Tu seras prévenu dès qu'il y en a une._
 
 | Source | Statut | Offres | Détail |
 |---|---|---:|---|
-| PlayStation (officiel) (blanche) | 🧱 bloqué | 0 | bloqué (HTTP 403) |
-| PlayStation (officiel) (noire) | 🧱 bloqué | 0 | bloqué (HTTP 403) |
+| PlayStation (officiel) (blanche) | ✅ | 1 |  |
+| PlayStation (officiel) (noire) | ✅ | 1 |  |
 | PlayStation Store (blanche) | ✅ | 1 |  |
 | PlayStation Store (noire) | ✅ | 1 |  |
 | idealo (blanche) | ✅ | 2 | 4 offre(s), 2 chez des enseignes fiables · écartées (marchand non vérifié) : cstech.store/fr, kaufland.fr |
 | idealo (noire) | ✅ | 0 | 1 offre(s), 0 chez des enseignes fiables · écartées (marchand non vérifié) : kaufland.fr |
 | TopAchat (blanche) | ✅ | 1 |  |
 | E.Leclerc (blanche) | ✅ | 2 |  |
-| Micromania (recherche) | ✅ | 0 | pas référencée pour l'instant |
+| Micromania (recherche) | 🧱 bloqué | 0 | bloqué par Imperva |
 | E.Leclerc (recherche) | ✅ | 2 | 1 fiche(s) trouvée(s) |
 | Boulanger (recherche) | ✅ | 0 | pas référencée pour l'instant |
 | Auchan (recherche) | ✅ | 1 | 1 fiche(s) trouvée(s) |
@@ -52,4 +54,4 @@ _Aucune pour l'instant. Tu seras prévenu dès qu'il y en a une._
 | 21/11 | 204,99 € | — |
 | 20/11 | 204,99 € | — |
 
-_Vérification faite en 19 s. Réglages : `config.toml`._
+_Vérification faite en 14 s. Réglages : `config.toml`._
