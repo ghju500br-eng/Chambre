@@ -1,6 +1,6 @@
 # 🎮 Traqueur — manette DualSense édition limitée GTA VI
 
-> Dernière vérification : **dimanche 22/11 à 09h19** (heure de Paris) · prochaine dans ~30 min — Sony est vérifié toutes les 5 min (si GitHub suit)  
+> Dernière vérification : **dimanche 22/11 à 10h28** (heure de Paris) · prochaine dans ~30 min — Sony est vérifié toutes les 5 min (si GitHub suit)  
 > Objectif : **moins de 100,00 € port compris**, uniquement chez des vendeurs fiables.  
 > Prix officiel Sony : 84,99 €.
 
@@ -35,8 +35,8 @@ _Aucune pour l'instant. Tu seras prévenu dès qu'il y en a une._
 | PlayStation (officiel) (noire) | ✅ | 1 |  |
 | PlayStation Store (blanche) | ✅ | 1 |  |
 | PlayStation Store (noire) | ✅ | 1 |  |
-| idealo (blanche) | ✅ | 2 | 5 offre(s), 2 chez des enseignes fiables · écartées (marchand non vérifié) : Ebay.fr, cstech.store/fr, kauflan |
-| idealo (noire) | ✅ | 0 | 2 offre(s), 0 chez des enseignes fiables · écartées (marchand non vérifié) : Ebay.fr, kaufland.fr |
+| idealo (blanche) | ✅ | 2 | 4 offre(s), 2 chez des enseignes fiables · écartées (marchand non vérifié) : cstech.store/fr, kaufland.fr |
+| idealo (noire) | ✅ | 0 | 1 offre(s), 0 chez des enseignes fiables · écartées (marchand non vérifié) : kaufland.fr |
 | TopAchat (blanche) | ✅ | 1 |  |
 | E.Leclerc (blanche) | ✅ | 2 |  |
 | Micromania (recherche) | ✅ | 0 | pas référencée pour l'instant |
@@ -54,4 +54,4 @@ _Aucune pour l'instant. Tu seras prévenu dès qu'il y en a une._
 | 21/11 | 204,99 € | — |
 | 20/11 | 204,99 € | — |
 
-_Vérification faite en 12 s. Réglages : `config.toml`._
+_Vérification faite en 14 s. Réglages : `config.toml`._
