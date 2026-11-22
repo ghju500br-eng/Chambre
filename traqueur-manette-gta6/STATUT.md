@@ -1,6 +1,6 @@
 # 🎮 Traqueur — manette DualSense édition limitée GTA VI
 
-> Dernière vérification : **dimanche 22/11 à 18h25** (heure de Paris) · prochaine dans ~30 min — Sony est vérifié toutes les 5 min (si GitHub suit)  
+> Dernière vérification : **dimanche 22/11 à 19h20** (heure de Paris) · prochaine dans ~30 min — Sony est vérifié toutes les 5 min (si GitHub suit)  
 > Objectif : **moins de 100,00 € port compris**, uniquement chez des vendeurs fiables.  
 > Prix officiel Sony : 84,99 €.
 
@@ -39,7 +39,7 @@ _Aucune pour l'instant. Tu seras prévenu dès qu'il y en a une._
 | idealo (noire) | ✅ | 0 | 1 offre(s), 0 chez des enseignes fiables · écartées (marchand non vérifié) : kaufland.fr |
 | TopAchat (blanche) | ✅ | 1 |  |
 | E.Leclerc (blanche) | ✅ | 2 |  |
-| Micromania (recherche) | 🧱 bloqué | 0 | bloqué par Imperva |
+| Micromania (recherche) | ✅ | 0 | pas référencée pour l'instant |
 | E.Leclerc (recherche) | ✅ | 2 | 1 fiche(s) trouvée(s) |
 | Boulanger (recherche) | ✅ | 0 | pas référencée pour l'instant |
 | Auchan (recherche) | ✅ | 1 | 1 fiche(s) trouvée(s) |
@@ -54,4 +54,4 @@ _Aucune pour l'instant. Tu seras prévenu dès qu'il y en a une._
 | 21/11 | 204,99 € | — |
 | 20/11 | 204,99 € | — |
 
-_Vérification faite en 14 s. Réglages : `config.toml`._
+_Vérification faite en 16 s. Réglages : `config.toml`._
