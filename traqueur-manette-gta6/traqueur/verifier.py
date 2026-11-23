@@ -12,6 +12,7 @@ from .http import Navigateur
 from .sources import ErreurSource, amazon, dealabs, ebay, enseignes, idealo, playstation
 
 PORT_SI_INCONNU = 8.0   # quand les frais de port ne sont pas affichés, on suppose ça pour comparer au seuil
+PRIX_ABSURDE = 1000.0   # au-delà, c'est une annonce farfelue (vu : 6 998,99 € chez un vendeur tiers) : ignorée
 
 
 @dataclass
@@ -138,6 +139,8 @@ def trier(sources: list[M.ResultatSource], cfg: Config) -> Bilan:
             if not o.neuf and not cfg.accepter_occasion:
                 continue
             if o.confiance in (M.MARKETPLACE, M.EBAY_PRO) and o.prix is not None and o.prix < cfg.ebay_prix_min_credible:
+                continue
+            if o.prix is not None and o.prix > PRIX_ABSURDE:
                 continue
             ancienne = retenues.get(o.cle)
             if ancienne is None or (o.total or 1e9) < (ancienne.total or 1e9):

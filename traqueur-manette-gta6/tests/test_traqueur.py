@@ -315,6 +315,10 @@ class TestAlertes(unittest.TestCase):
         self.assertEqual([o.prix for o in b.alertes], [84.99])     # 95 € + port inconnu (≈8 €) > 100 €
         self.assertEqual([o.prix for o in b.compromis], [104.0])
 
+    def test_annonce_farfelue_ignoree(self):
+        b = bilan_avec(offre(6998.99, url="https://www.fnac.com/a9"), offre(222.39, url="https://www.fnac.com/a8"))
+        self.assertEqual([o.prix for o in b.offres], [222.39])
+
     def test_pas_de_double_alerte(self):
         etat = {}
         b = bilan_avec(offre(84.99))
