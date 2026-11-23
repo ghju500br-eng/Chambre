@@ -1,6 +1,6 @@
 # 🎮 Traqueur — manette DualSense édition limitée GTA VI
 
-> Dernière vérification : **lundi 23/11 à 19h32** (heure de Paris) · prochaine dans ~30 min — Sony est vérifié toutes les 5 min (si GitHub suit)  
+> Dernière vérification : **lundi 23/11 à 20h42** (heure de Paris) · prochaine dans ~30 min — Sony est vérifié toutes les 5 min (si GitHub suit)  
 > Objectif : **moins de 100,00 € port compris**, uniquement chez des vendeurs fiables.  
 > Prix officiel Sony : 84,99 €.
 
@@ -22,6 +22,8 @@ _Aucune pour l'instant. Tu seras prévenu dès qu'il y en a une._
 
 | Site | Édition | Prix | Stock | Lien |
 |---|---|---:|---|---|
+| PlayStation (officiel) | ⚪ Blanche | 84,99 € | ❌ Non disponible à l'achat | [voir](https://www.playstation.com/fr-fr/accessories/dualsense-wireless-controller/buy-now/product/grand-theft-auto-vi-white-limited-edition/) |
+| PlayStation (officiel) | ⚫ Noire | 84,99 € | ❌ Non disponible à l'achat | [voir](https://www.playstation.com/fr-fr/accessories/dualsense-wireless-controller/buy-now/product/grand-theft-auto-vi-black-limited-edition/) |
 | PlayStation Store | ⚪ Blanche | 84,99 € | ❌ Non disponible à l'achat | [voir](https://store.playstation.com/fr-fr/product/PSD001-PSDE02019_19-DUALSENSEG2TH2YE) |
 | PlayStation Store | ⚫ Noire | 84,99 € | ❌ Non disponible à l'achat | [voir](https://store.playstation.com/fr-fr/product/PSD001-PSDE02019_19-DUALSENSEGEYIO4E) |
 | Boulanger | ⚪ Blanche | 371,70 € | ✅ En stock | [voir](https://www.boulanger.com/ref/1247622) |
@@ -31,11 +33,11 @@ _Aucune pour l'instant. Tu seras prévenu dès qu'il y en a une._
 
 | Source | Statut | Offres | Détail |
 |---|---|---:|---|
-| PlayStation (officiel) (blanche) | 🧱 bloqué | 0 | bloqué (HTTP 403) |
-| PlayStation (officiel) (noire) | 🧱 bloqué | 0 | bloqué (HTTP 403) |
+| PlayStation (officiel) (blanche) | ✅ | 1 |  |
+| PlayStation (officiel) (noire) | ✅ | 1 |  |
 | PlayStation Store (blanche) | ✅ | 1 |  |
 | PlayStation Store (noire) | ✅ | 1 |  |
-| idealo (blanche) | ✅ | 2 | 4 offre(s), 2 chez des enseignes fiables · écartées (marchand non vérifié) : cstech.store/fr, kaufland.fr |
+| idealo (blanche) | ✅ | 2 | 3 offre(s), 2 chez des enseignes fiables · écartées (marchand non vérifié) : kaufland.fr |
 | idealo (noire) | ✅ | 0 | 1 offre(s), 0 chez des enseignes fiables · écartées (marchand non vérifié) : kaufland.fr |
 | TopAchat (blanche) | ✅ | 1 |  |
 | E.Leclerc (blanche) | ✅ | 2 |  |
@@ -55,4 +57,4 @@ _Aucune pour l'instant. Tu seras prévenu dès qu'il y en a une._
 | 21/11 | 204,99 € | — |
 | 20/11 | 204,99 € | — |
 
-_Vérification faite en 15 s. Réglages : `config.toml`._
+_Vérification faite en 20 s. Réglages : `config.toml`._
