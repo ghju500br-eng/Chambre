@@ -1,6 +1,6 @@
 # 🎮 Traqueur — manette DualSense édition limitée GTA VI
 
-> Dernière vérification : **mardi 24/11 à 02h56** (heure de Paris) · prochaine dans ~30 min — Sony est vérifié toutes les 5 min (si GitHub suit)  
+> Dernière vérification : **mardi 24/11 à 03h58** (heure de Paris) · prochaine dans ~30 min — Sony est vérifié toutes les 5 min (si GitHub suit)  
 > Objectif : **moins de 100,00 € port compris**, uniquement chez des vendeurs fiables.  
 > Prix officiel Sony : 84,99 €.
 
@@ -26,6 +26,7 @@ _Aucune pour l'instant. Tu seras prévenu dès qu'il y en a une._
 | PlayStation Store | ⚪ Blanche | 84,99 € | ❌ Non disponible à l'achat | [voir](https://store.playstation.com/fr-fr/product/PSD001-PSDE02019_19-DUALSENSEG2TH2YE) |
 | PlayStation Store | ⚫ Noire | 84,99 € | ❌ Non disponible à l'achat | [voir](https://store.playstation.com/fr-fr/product/PSD001-PSDE02019_19-DUALSENSEGEYIO4E) |
 | Boulanger | ⚪ Blanche | 371,70 € | ✅ En stock | [voir](https://www.boulanger.com/ref/1247622) |
+| TopAchat | ⚪ Blanche | 99,99 € | ❌ Rupture de stock | [voir](https://www.topachat.com/pages/detail2_cat_est_gaming_puis_rubrique_est_wg_pcgam_puis_ref_est_in20032780.html) |
 
 ## 📡 État des sources
 
@@ -37,13 +38,13 @@ _Aucune pour l'instant. Tu seras prévenu dès qu'il y en a une._
 | PlayStation Store (noire) | ✅ | 1 |  |
 | idealo (blanche) | ✅ | 2 | 3 offre(s), 2 chez des enseignes fiables · écartées (marchand non vérifié) : kaufland.fr |
 | idealo (noire) | ✅ | 0 | 1 offre(s), 0 chez des enseignes fiables · écartées (marchand non vérifié) : kaufland.fr |
-| TopAchat (blanche) | ⚠️ erreur | 0 | erreur réseau : Timeout |
+| TopAchat (blanche) | ✅ | 1 |  |
 | E.Leclerc (blanche) | ✅ | 2 |  |
-| Micromania (recherche) | ✅ | 0 | pas référencée pour l'instant |
+| Micromania (recherche) | 🧱 bloqué | 0 | bloqué par Imperva |
 | E.Leclerc (recherche) | ✅ | 2 | 1 fiche(s) trouvée(s) |
 | Boulanger (recherche) | ✅ | 1 | 1 fiche(s) trouvée(s) |
 | Auchan (recherche) | ✅ | 1 | 1 fiche(s) trouvée(s) |
-| LDLC (recherche) | ⚠️ erreur | 0 | erreur réseau : Timeout |
+| LDLC (recherche) | ✅ | 0 | pas référencée pour l'instant |
 | Dealabs | ✅ | 0 |  |
 
 ## 📈 Historique — meilleur prix dispo (vendeurs fiables)
@@ -56,4 +57,4 @@ _Aucune pour l'instant. Tu seras prévenu dès qu'il y en a une._
 | 21/11 | 204,99 € | — |
 | 20/11 | 204,99 € | — |
 
-_Vérification faite en 119 s. Réglages : `config.toml`._
+_Vérification faite en 8 s. Réglages : `config.toml`._
