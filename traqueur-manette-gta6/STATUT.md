@@ -1,6 +1,6 @@
 # 🎮 Traqueur — manette DualSense édition limitée GTA VI
 
-> Dernière vérification : **mardi 24/11 à 14h23** (heure de Paris) · prochaine dans ~30 min — Sony est vérifié toutes les 5 min (si GitHub suit)  
+> Dernière vérification : **mardi 24/11 à 15h39** (heure de Paris) · prochaine dans ~30 min — Sony est vérifié toutes les 5 min (si GitHub suit)  
 > Objectif : **moins de 100,00 € port compris**, uniquement chez des vendeurs fiables.  
 > Prix officiel Sony : 84,99 €.
 
@@ -12,7 +12,7 @@ _Aucune pour l'instant. Tu seras prévenu dès qu'il y en a une._
 
 | Total | Édition | Site | Vendeur | Stock | Lien |
 |---:|---|---|---|---|---|
-| **222,39 €** | ⚪ Blanche | idealo → Fnac.com (Marketplace) | Fnac.com (Marketplace) | En vente (selon idealo) · port inconnu | [voir](https://www.idealo.fr/prix/214031142/sony-dualsense-wireless-controller-grand-theft-auto-vi-white-limited-edition.html) |
+| **221,69 €** | ⚪ Blanche | idealo → Fnac.com (Marketplace) | Fnac.com (Marketplace) | En vente (selon idealo) · port inconnu | [voir](https://www.idealo.fr/prix/214031142/sony-dualsense-wireless-controller-grand-theft-auto-vi-white-limited-edition.html) |
 | **270,33 €** | ⚪ Blanche | E.Leclerc | MS2 Digital | En stock · port inconnu | [voir](https://www.e.leclerc/fp/manette-sans-fil-dualsense-edition-limitee-grand-theft-auto-vi-white-ps5-0711719072836) |
 | **299,99 €** | ❔ Édition à confirmer | Auchan | MASS DISTRIB | En stock · port inconnu | [voir](https://www.auchan.fr/sony-manette-sans-fil-dualsense-edition-limitee-grand-theft-auto-vi/pr-C1894272) |
 | **368,40 €** | ⚪ Blanche | Boulanger | Boulanger | En stock · port inconnu | [voir](https://www.boulanger.com/ref/1247622) |
@@ -51,10 +51,10 @@ _Aucune pour l'instant. Tu seras prévenu dès qu'il y en a une._
 
 | Jour | ⚪ Blanche | ⚫ Noire |
 |---|---:|---:|
-| 24/11 | 222,39 € | — |
+| 24/11 | 221,69 € | — |
 | 23/11 | 219,99 € | — |
 | 22/11 | 219,99 € | — |
 | 21/11 | 204,99 € | — |
 | 20/11 | 204,99 € | — |
 
-_Vérification faite en 14 s. Réglages : `config.toml`._
+_Vérification faite en 12 s. Réglages : `config.toml`._
