@@ -1,6 +1,6 @@
 # 🎮 Traqueur — manette DualSense édition limitée GTA VI
 
-> Dernière vérification : **mardi 24/11 à 17h42** (heure de Paris) · prochaine dans ~30 min — Sony est vérifié toutes les 5 min (si GitHub suit)  
+> Dernière vérification : **mercredi 25/11 à 02h05** (heure de Paris) · prochaine dans ~30 min — Sony est vérifié toutes les 5 min (si GitHub suit)  
 > Objectif : **moins de 100,00 € port compris**, uniquement chez des vendeurs fiables.  
 > Prix officiel Sony : 84,99 €.
 
@@ -12,10 +12,10 @@ _Aucune pour l'instant. Tu seras prévenu dès qu'il y en a une._
 
 | Total | Édition | Site | Vendeur | Stock | Lien |
 |---:|---|---|---|---|---|
-| **221,69 €** | ⚪ Blanche | idealo → Fnac.com (Marketplace) | Fnac.com (Marketplace) | En vente (selon idealo) · port inconnu | [voir](https://www.idealo.fr/prix/214031142/sony-dualsense-wireless-controller-grand-theft-auto-vi-white-limited-edition.html) |
+| **224,99 €** | ⚪ Blanche | idealo → Fnac.com (Marketplace) | Fnac.com (Marketplace) | En vente (selon idealo) · port inconnu | [voir](https://www.idealo.fr/prix/214031142/sony-dualsense-wireless-controller-grand-theft-auto-vi-white-limited-edition.html) |
+| **224,99 €** | ⚪ Blanche | idealo → Darty.com (Marketplace) | Darty.com (Marketplace) | En vente (selon idealo) · port inconnu | [voir](https://www.idealo.fr/prix/214031142/sony-dualsense-wireless-controller-grand-theft-auto-vi-white-limited-edition.html) |
 | **270,33 €** | ⚪ Blanche | E.Leclerc | MS2 Digital | En stock · port inconnu | [voir](https://www.e.leclerc/fp/manette-sans-fil-dualsense-edition-limitee-grand-theft-auto-vi-white-ps5-0711719072836) |
 | **299,99 €** | ❔ Édition à confirmer | Auchan | MASS DISTRIB | En stock · port inconnu | [voir](https://www.auchan.fr/sony-manette-sans-fil-dualsense-edition-limitee-grand-theft-auto-vi/pr-C1894272) |
-| **369,08 €** | ⚪ Blanche | Boulanger | Boulanger | En stock · port inconnu | [voir](https://www.boulanger.com/ref/1247622) |
 
 ## 🏬 Sony et enseignes (même en rupture)
 
@@ -25,7 +25,6 @@ _Aucune pour l'instant. Tu seras prévenu dès qu'il y en a une._
 | PlayStation (officiel) | ⚫ Noire | 84,99 € | ❌ Non disponible à l'achat | [voir](https://www.playstation.com/fr-fr/accessories/dualsense-wireless-controller/buy-now/product/grand-theft-auto-vi-black-limited-edition/) |
 | PlayStation Store | ⚪ Blanche | 84,99 € | ❌ Non disponible à l'achat | [voir](https://store.playstation.com/fr-fr/product/PSD001-PSDE02019_19-DUALSENSEG2TH2YE) |
 | PlayStation Store | ⚫ Noire | 84,99 € | ❌ Non disponible à l'achat | [voir](https://store.playstation.com/fr-fr/product/PSD001-PSDE02019_19-DUALSENSEGEYIO4E) |
-| Boulanger | ⚪ Blanche | 369,08 € | ✅ En stock | [voir](https://www.boulanger.com/ref/1247622) |
 | TopAchat | ⚪ Blanche | 99,99 € | ❌ Rupture de stock | [voir](https://www.topachat.com/pages/detail2_cat_est_gaming_puis_rubrique_est_wg_pcgam_puis_ref_est_in20032780.html) |
 
 ## 📡 État des sources
@@ -42,7 +41,7 @@ _Aucune pour l'instant. Tu seras prévenu dès qu'il y en a une._
 | E.Leclerc (blanche) | ✅ | 2 |  |
 | Micromania (recherche) | ✅ | 0 | pas référencée pour l'instant |
 | E.Leclerc (recherche) | ✅ | 2 | 1 fiche(s) trouvée(s) |
-| Boulanger (recherche) | ✅ | 1 | 1 fiche(s) trouvée(s) |
+| Boulanger (recherche) | ✅ | 0 | pas référencée pour l'instant |
 | Auchan (recherche) | ✅ | 1 | 1 fiche(s) trouvée(s) |
 | LDLC (recherche) | ✅ | 0 | pas référencée pour l'instant |
 | Dealabs | ✅ | 0 |  |
@@ -51,10 +50,11 @@ _Aucune pour l'instant. Tu seras prévenu dès qu'il y en a une._
 
 | Jour | ⚪ Blanche | ⚫ Noire |
 |---|---:|---:|
+| 25/11 | 224,99 € | — |
 | 24/11 | 221,69 € | — |
 | 23/11 | 219,99 € | — |
 | 22/11 | 219,99 € | — |
 | 21/11 | 204,99 € | — |
 | 20/11 | 204,99 € | — |
 
-_Vérification faite en 13 s. Réglages : `config.toml`._
+_Vérification faite en 12 s. Réglages : `config.toml`._
